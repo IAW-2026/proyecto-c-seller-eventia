@@ -1,10 +1,11 @@
-import prisma from "../../../../lib/prisma";
+import prisma from "../../../../../lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { idEvento: string } }
+  { params }: { params: Promise<{ idEvento: string }> }
 ) {
-  const idEvento = Number(params.idEvento);
+  const { idEvento: idEventoParam } = await params;
+  const idEvento = Number(idEventoParam);
 
   if (!Number.isInteger(idEvento)) {
     return new Response(JSON.stringify({ error: "idEvento inválido" }), {
