@@ -1,4 +1,4 @@
-import Sidenav from '@/app/ui/sidenav';
+import Sidenav from '@/app/ui/sideBar';
 import '@/app/globals.css';
 
 export default function RootLayout({
