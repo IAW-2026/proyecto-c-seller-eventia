@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model eventos {
+  idEvento      Int     @id @default(autoincrement())
+  nombreEvento  String?
+  descripcion   String?
+  fecha         DateTime?
+  ubicacion     String?
+  stock         Int?
+  idOrganizador Int?
+  precio        Float?  @db.Real
+}
+
+model organizadores {
+  idOrganizador     Int     @id @default(autoincrement())
+  nombreOrganizador String?
+  mail              String?
+  datosCuenta       String?
+  idEvento          Int?
+}
+
+model pedidos {
+  idPedido      Int     @id @default(autoincrement())
+  idOrganizador Int?
+  idUsuario     Int?
+  idEvento      Int?
+  idTransaccion Int?
+  cantEntradas  Int?
+  monto         Float?  @db.Real
+}
