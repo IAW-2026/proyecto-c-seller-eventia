@@ -13,24 +13,31 @@ model eventos {
   fecha         DateTime?
   ubicacion     String?
   stock         Int?
-  idOrganizador Int?
+  idOrganizador String?
   precio        Float?  @db.Real
+
+  organizador   organizadores? @relation(fields: [idOrganizador], references: [idOrganizador])
+  pedidos       pedidos[]
 }
 
 model organizadores {
-  idOrganizador     Int     @id @default(autoincrement())
+  idOrganizador     String  @id            // usar el ID que entrega Clerk (ej. user.id)
   nombreOrganizador String?
+  apellido          String?
   mail              String?
-  datosCuenta       String?
-  idEvento          Int?
+  eventos           eventos[]
+  pedidos           pedidos[]
 }
 
 model pedidos {
   idPedido      Int     @id @default(autoincrement())
-  idOrganizador Int?
+  idOrganizador String?
   idUsuario     Int?
   idEvento      Int?
   idTransaccion Int?
   cantEntradas  Int?
   monto         Float?  @db.Real
+
+  organizador   organizadores? @relation(fields: [idOrganizador], references: [idOrganizador])
+  evento        eventos?       @relation(fields: [idEvento], references: [idEvento])
 }

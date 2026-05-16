@@ -3,8 +3,16 @@
 import prisma from "@/app/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateOrganizador } from "@/app/lib/actions/organizadores";
 
 export async function upsertEventoAction(idEvento: number | null, data: any) {
+  const { userId } = await auth();
+  if (!userId) throw new Error("No autorizado");
+
+  // Creamos o actualizamos el organizador local a partir de Clerk
+  const organizador = await getOrCreateOrganizador();
+
   const payload = {
     nombreEvento: data.nombreEvento,
     descripcion: data.descripcion,
@@ -12,6 +20,7 @@ export async function upsertEventoAction(idEvento: number | null, data: any) {
     ubicacion: data.ubicacion,
     stock: data.stock ? Number(data.stock) : null,
     precio: data.precio ? Number(data.precio) : null,
+    idOrganizador: organizador.idOrganizador, // Asignamos la llave foránea
   };
 
   try {
