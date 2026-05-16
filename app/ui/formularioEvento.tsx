@@ -16,6 +16,7 @@ type Props = {
   isSubmitting: boolean;
   handleSubmit: UseFormHandleSubmit<FormValues>;
   onSubmit: (data: FormValues) => Promise<void>;
+  idEvento?: number | null;
 };
 
 export default function NuevoEventoForm({
@@ -24,11 +25,14 @@ export default function NuevoEventoForm({
   isSubmitting,
   handleSubmit,
   onSubmit,
+  idEvento,
 }: Props) {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Nuevo Evento</h1>
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">
+          {idEvento ? 'Editar Evento' : 'Nuevo Evento'}
+        </h1>
         <p className="text-slate-600">
           Completa los detalles a continuación para configurar su próximo gran evento.
         </p>
@@ -116,7 +120,10 @@ export default function NuevoEventoForm({
           {errors.precio && <p className="text-sm text-red-600 mt-1">{errors.precio.message}</p>}
         </div>
 
-        <CrearEventoButton loading={isSubmitting} />
+        <CrearEventoButton 
+          loading={isSubmitting} 
+          label={idEvento ? 'Guardar Cambios' : 'Crear Evento'} 
+        />
       </form>
     </div>
   );

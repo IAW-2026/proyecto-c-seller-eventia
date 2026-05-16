@@ -9,6 +9,7 @@ export type Evento = {
   descripcion: string | null;
   ubicacion: string | null;
   fecha: string | null;
+  precio: number | null;
 };
 
 type Props = {
@@ -41,6 +42,7 @@ export default function EventoCard({ evento, onModificar, onEliminar }: Props) {
         <li className="border-b border-slate-200 px-4 py-2 text-sm">
           {evento.fecha ? new Date(evento.fecha).toLocaleString() : 'Sin fecha'}
         </li>
+        <li className="border-b border-slate-200 px-4 py-2 text-sm"> Entrada </li>
       </ul>
 
       <div className="flex justify-center gap-2 p-4">
