@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { LayoutDashboard, CalendarDays } from 'lucide-react';
+import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 
 export default function Sidenav() {
   const pathname = usePathname();
@@ -38,7 +39,29 @@ export default function Sidenav() {
             );
           })}
         </div>
+
+        <div className="flex items-center gap-4">
+          <AuthArea />
+        </div>
       </div>
     </nav>
+  );
+}
+
+function AuthArea() {
+  const { isSignedIn } = useUser();
+
+  return (
+    <>
+      {!isSignedIn && (
+        <SignInButton mode="modal">
+          <button className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+            Iniciar sesión
+          </button>
+        </SignInButton>
+      )}
+
+      {isSignedIn && <UserButton />}
+    </>
   );
 }

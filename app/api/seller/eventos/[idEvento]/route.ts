@@ -1,128 +1,45 @@
+import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { isAdmin } from "@/app/lib/admin";
 
 function parseId(idEventoParam: string) {
   const idEvento = Number(idEventoParam);
-
-  if (!Number.isInteger(idEvento)) {
-    return null;
-  }
-
-  return idEvento;
+  return Number.isInteger(idEvento) ? idEvento : null;
 }
 
+// GET /api/seller/eventos/[idEvento] - Público: Ver detalle de un evento
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ idEvento: string }> }
+  { params }: { params: { idEvento: string } }
 ) {
-  const { idEvento: idEventoParam } = await params;
-  const idEvento = parseId(idEventoParam);
-
-  if (!idEvento) {
-    return new Response(JSON.stringify({ error: "idEvento inválido" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+  const id = parseId(params.idEvento);
+  if (id === null) {
+    return NextResponse.json({ error: "ID de evento no válido" }, { status: 400 });
   }
 
   const evento = await prisma.eventos.findUnique({
-    where: { idEvento },
+    where: { idEvento: id },
   });
 
   if (!evento) {
-    return new Response(JSON.stringify({ error: "Evento no encontrado" }), {
-      status: 404,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json({ error: "Evento no encontrado" }, { status: 404 });
   }
 
-  return new Response(JSON.stringify(evento), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
+  return NextResponse.json(evento);
+}
+
+async function canManageEvento(idEvento: number) {
+  const { userId } = await auth();
+  if (!userId) return false;
+
+  const admin = await isAdmin();
+  if (admin) return true;
+
+  const evento = await prisma.eventos.findUnique({
+    where: { idEvento },
+    select: { idOrganizador: true },
   });
-}
 
-export async function PUT(
-  request: Request,
-  { params }: { params: Promise<{ idEvento: string }> }
-) {
-  try {
-    const { idEvento: idEventoParam } = await params;
-    const idEvento = parseId(idEventoParam);
-
-    if (!idEvento) {
-      return new Response(JSON.stringify({ error: "idEvento inválido" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    const body = await request.json();
-    const {
-      nombreEvento,
-      descripcion,
-      fecha,
-      ubicacion,
-      stock,
-      precio,
-    } = body;
-
-    const eventoActualizado = await prisma.eventos.update({
-      where: { idEvento },
-      data: {
-        nombreEvento,
-        descripcion,
-        fecha: fecha ? new Date(fecha) : null,
-        ubicacion,
-        stock: stock !== undefined && stock !== null && stock !== ""
-          ? Number(stock)
-          : null,
-        precio: precio !== undefined && precio !== null && precio !== ""
-          ? Number(precio)
-          : null,
-      },
-    });
-
-    return new Response(JSON.stringify(eventoActualizado), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error(error);
-    return new Response(JSON.stringify({ error: "No se pudo actualizar el evento" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-}
-
-export async function DELETE(
-  request: Request,
-  { params }: { params: Promise<{ idEvento: string }> }
-) {
-  try {
-    const { idEvento: idEventoParam } = await params;
-    const idEvento = parseId(idEventoParam);
-
-    if (!idEvento) {
-      return new Response(JSON.stringify({ error: "idEvento inválido" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    await prisma.eventos.delete({
-      where: { idEvento },
-    });
-
-    return new Response(JSON.stringify({ message: "Evento eliminado" }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error(error);
-    return new Response(JSON.stringify({ error: "No se pudo eliminar el evento" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+  return evento?.idOrganizador === userId;
 }

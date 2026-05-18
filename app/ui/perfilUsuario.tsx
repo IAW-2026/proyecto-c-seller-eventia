@@ -1,20 +1,28 @@
-'use client'
+'use client';
 
-import { useUser, UserButton } from "@clerk/nextjs"
+import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 
-export default function Navbar() {
-  const { user, isSignedIn } = useUser()
+export default function PerfilUsuario() {
+  const { user, isSignedIn } = useUser();
 
   return (
     <div className="fixed top-4 right-4 z-50">
-      {isSignedIn ? (
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">{user?.firstName}</span>
+      {!isSignedIn && (
+        <SignInButton mode="modal">
+          <button className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+            Iniciar sesión
+          </button>
+        </SignInButton>
+      )}
+
+      {isSignedIn && (
+        <div className="flex items-center gap-3">
           <UserButton />
+          <span className="text-sm font-medium text-slate-700">
+            Bienvenido/a, {user?.firstName ?? 'usuario'}
+          </span>
         </div>
-      ) : (
-        <p className="text-sm">No logueado</p>
       )}
     </div>
-  )
+  );
 }
