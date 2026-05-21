@@ -29,14 +29,21 @@ model organizadores {
   pedidos           pedidos[]
 }
 
+enum EstadoPedido {
+  PENDIENTE
+  PAGADO
+  CANCELADO
+}
+
 model pedidos {
   idPedido      Int     @id @default(autoincrement())
   idOrganizador String?
-  idUsuario     Int?
+  idUsuario     String?
   idEvento      Int?
-  idTransaccion Int?
   cantEntradas  Int?
   monto         Float?  @db.Real
+  estado        EstadoPedido
+  createdAt     DateTime     @default(now())
 
   organizador   organizadores? @relation(fields: [idOrganizador], references: [idOrganizador])
   evento        eventos?       @relation(fields: [idEvento], references: [idEvento])

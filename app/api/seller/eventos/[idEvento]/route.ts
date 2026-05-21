@@ -11,9 +11,11 @@ function parseId(idEventoParam: string) {
 // GET /api/seller/eventos/[idEvento] - Público: Ver detalle de un evento
 export async function GET(
   request: Request,
-  { params }: { params: { idEvento: string } }
+  { params }: { params: Promise<{ idEvento: string }> }
 ) {
-  const id = parseId(params.idEvento);
+  const { idEvento } = await params;
+  const id = parseId(idEvento);
+
   if (id === null) {
     return NextResponse.json({ error: "ID de evento no válido" }, { status: 400 });
   }
