@@ -1,12 +1,7 @@
-import { auth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 
 export async function isAdmin() {
-  const { userId } = await auth();
-  if (!userId) return false;
-
-  if (userId === process.env.ADMIN_USER_ID) {
-    return true;
-  }
-
-  return false;
+  const user = await currentUser();
+  if (!user) return false;
+  return user.publicMetadata?.role === 'adminSeller';
 }

@@ -23,11 +23,11 @@ export async function getOrCreateOrganizador() {
   const apellido = user.lastName ?? null;
   const email = user.emailAddresses[0]?.emailAddress ?? null;
   
- //agrego el rol de buyer a los usuarios que se crean desde esta función
+ //agrego el rol de seller a los usuarios que se crean desde esta función
   const currentRoles =(user.publicMetadata.roles as string[]) || [];
-  //combinar con 'buyer' por si es seller o tiene otros roles, para no sobreescribirlos
+  //combinar con 'seller' por si es buyer o tiene otros roles, para no sobreescribirlos
   const updatedRoles = [...currentRoles, 'seller'];
-  // guardar en clerk el nuevo rol de buyer (para que se refleje en el jwt y se pueda usar desde shipping)
+  // guardar en clerk el nuevo rol de seller (para que se refleje en el jwt y se pueda usar desde shipping)
   const client = await clerkClient();
   await client.users.updateUserMetadata(userId, {
     publicMetadata: {

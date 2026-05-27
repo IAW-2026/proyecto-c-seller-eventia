@@ -7,7 +7,8 @@ export async function GET() {
     const eventos = await prisma.eventos.findMany();
     return NextResponse.json(eventos);
   } catch (error) {
-    return NextResponse.json({ error: "Error al obtener los eventos" }, { status: 500 });
+    console.error("[seller/eventos] Prisma error:", error);
+    return NextResponse.json({ error: "Error al obtener los eventos", detalle: String(error) }, { status: 500 });
   }
 }
 

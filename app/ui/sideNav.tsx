@@ -2,15 +2,18 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, CalendarDays } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, ShieldCheck } from 'lucide-react';
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 
 export default function Sidenav() {
   const pathname = usePathname();
+  const { user } = useUser();
+  const isAdmin = user?.publicMetadata?.role === 'adminSeller';
 
   const links = [
     { href: '/', label: 'Inicio', icon: LayoutDashboard },
-    { href: '/seller/eventos', label: 'Mis Eventos', icon: CalendarDays },
+    { href: '/vendedor/eventos', label: 'Mis Eventos', icon: CalendarDays },
+      ...(isAdmin ? [{ href: '/admin', label: 'Panel Admin', icon: ShieldCheck }] : []),
   ];
 
   return (
