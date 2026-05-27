@@ -19,7 +19,7 @@ export default function HomePage() {
         </p>
 
         <Link
-          href="/seller/eventos/nuevo"
+          href="/vendedor/eventos/nuevo"
           className="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-8 py-4 text-white font-semibold transition hover:bg-indigo-700"
         >
           Crear evento

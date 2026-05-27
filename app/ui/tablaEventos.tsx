@@ -9,7 +9,7 @@ export default function TablaEventos({ eventos }: { eventos: Evento[] }) {
 
   const handleModificar = (idEvento: number) => {
     // Redirigimos a la página del formulario pasando el modo y el ID
-    router.push(`/seller/eventos/nuevo?modo=editar&idEvento=${idEvento}`);
+    router.push(`/vendedor/eventos/nuevo?modo=editar&idEvento=${idEvento}`);
   };
 
   const handleEliminar = async (idEvento: number) => {

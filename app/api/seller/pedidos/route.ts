@@ -1,4 +1,6 @@
 import prisma from "../../../lib/prisma";
+import { NextResponse } from "next/server";
+
 
 export async function POST(request: Request) {
   try {
@@ -115,3 +117,23 @@ export async function POST(request: Request) {
     });
   }
 }
+
+// GET temporal solo para poblar el select en la simulación
+// TODO: quitar cuando se integren las apps
+export async function GET() {
+  try {
+    const pedidos = await prisma.pedidos.findMany({
+      select: {
+        idPedido: true,
+        idEvento: true,
+        estado: true,
+        monto: true,
+      },
+      orderBy: { idPedido: "desc" },
+    });
+    return NextResponse.json(pedidos);
+  } catch (error) {
+    return NextResponse.json({ error: "Error al obtener pedidos" }, { status: 500 });
+  }
+}
+

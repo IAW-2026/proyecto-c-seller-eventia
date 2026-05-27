@@ -40,8 +40,8 @@ export async function upsertEventoAction(idEvento: number | null, data: any) {
     return { error: "No se pudo guardar el evento" };
   }
 
-  revalidatePath('/seller/eventos');
-  redirect('/seller/eventos');
+  revalidatePath('/vendedor/eventos');
+  redirect('/vendedor/eventos');
 }
 
 export async function deleteEventoAction(idEvento: number) {
@@ -56,7 +56,7 @@ export async function deleteEventoAction(idEvento: number) {
     if (!admin && existing.idOrganizador !== userId) return { error: "No autorizado a eliminar este evento" };
 
     await prisma.eventos.delete({ where: { idEvento } });
-    revalidatePath('/seller/eventos');
+    revalidatePath('/vendedor/eventos');
     return { success: true };
   } catch (error) {
     console.error("Error al eliminar evento:", error);
