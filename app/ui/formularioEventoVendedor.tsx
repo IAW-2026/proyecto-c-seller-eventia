@@ -10,24 +10,38 @@ interface Props {
 }
 
 export default function FormularioEventoClient({ eventoInicial, idEvento }: Props) {
+  // Para el modo editar, separamos ubicacion en dirección y ciudad
+  const ubicacion = eventoInicial?.ubicacion ?? '';
+  const partes = ubicacion.split(',');
+  const ciudadInicial = partes.length > 1 ? partes.pop()?.trim() ?? '' : '';
+  const direccionInicial = partes.join(',').trim();
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
-    // Aquí ocurre la magia: si eventoInicial existe, Next.js llena el form automáticamente
     defaultValues: {
       nombreEvento: eventoInicial?.nombreEvento ?? '',
       descripcion: eventoInicial?.descripcion ?? '',
-      fecha: eventoInicial?.fecha ? new Date(eventoInicial.fecha).toISOString().slice(0, 16) : '',
-      ubicacion: eventoInicial?.ubicacion ?? '',
+      fecha: eventoInicial?.fecha
+        ? new Date(eventoInicial.fecha).toISOString().slice(0, 10)
+        : '',
+      hora: eventoInicial?.fecha
+        ? new Date(eventoInicial.fecha).toISOString().slice(11, 16)
+        : '',
+      direccion: direccionInicial,
+      ciudad: ciudadInicial,
       stock: eventoInicial?.stock?.toString() ?? '',
       precio: eventoInicial?.precio?.toString() ?? '',
     },
   });
 
+  const watchDireccion = watch('direccion');
+  const watchCiudad = watch('ciudad');
+
   const onSubmit = async (data: FormValues) => {
-    // Llamamos a la Server Action directamente como una función
     const result = await upsertEventoAction(idEvento ?? null, data);
     if (result?.error) {
       alert(result.error);
@@ -42,6 +56,8 @@ export default function FormularioEventoClient({ eventoInicial, idEvento }: Prop
       handleSubmit={handleSubmit}
       onSubmit={onSubmit}
       idEvento={idEvento}
+      watchDireccion={watchDireccion}
+      watchCiudad={watchCiudad}
     />
   );
 }

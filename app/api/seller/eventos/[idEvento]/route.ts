@@ -1,14 +1,12 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-import { auth } from "@clerk/nextjs/server";
-import { isAdmin } from "@/app/lib/admin";
 
 function parseId(idEventoParam: string) {
-  const idEvento = Number(idEventoParam);
-  return Number.isInteger(idEvento) ? idEvento : null;
+  const id = Number(idEventoParam);
+  return Number.isInteger(id) ? id : null;
 }
 
-// GET /api/seller/eventos/[idEvento] - Público: Ver detalle de un evento
+// GET /api/seller/eventos/[idEvento] — Público: ver detalle de un evento
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ idEvento: string }> }
@@ -29,19 +27,4 @@ export async function GET(
   }
 
   return NextResponse.json(evento);
-}
-
-async function canManageEvento(idEvento: number) {
-  const { userId } = await auth();
-  if (!userId) return false;
-
-  const admin = await isAdmin();
-  if (admin) return true;
-
-  const evento = await prisma.eventos.findUnique({
-    where: { idEvento },
-    select: { idOrganizador: true },
-  });
-
-  return evento?.idOrganizador === userId;
 }

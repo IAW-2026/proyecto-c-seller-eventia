@@ -17,8 +17,8 @@ export async function upsertEventoAction(idEvento: number | null, data: any) {
   const payload = {
     nombreEvento: data.nombreEvento,
     descripcion: data.descripcion,
-    fecha: data.fecha ? new Date(data.fecha) : null,
-    ubicacion: data.ubicacion,
+    fecha: data.fecha ? new Date(`${data.fecha}T${data.hora ?? '00:00'}`) : null,
+    ubicacion: [data.direccion, data.ciudad].filter(Boolean).join(', ') || null,
     stock: data.stock ? Number(data.stock) : null,
     precio: data.precio ? Number(data.precio) : null,
     idOrganizador: organizador.idOrganizador,

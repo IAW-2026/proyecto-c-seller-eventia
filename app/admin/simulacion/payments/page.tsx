@@ -17,25 +17,24 @@ export default function PaymentsSimulacion() {
   const [idPedido, setIdPedido] = useState("");
   const [estadoTransaccion, setEstadoTransaccion] = useState("pagado");
 
-  // Carga los eventos al montar para poblar el select de organizador
+  // Carga eventos y pedidos al montar para poblar los selects
   useEffect(() => {
     fetch("/api/buyer/eventos")
       .then((res) => res.json())
       .then((data) => setEventos(Array.isArray(data) ? data : []))
       .catch(() => setEventos([]));
 
-     // temporal: carga pedidos de la BD para el select de simulación
+    // TODO: quitar cuando se integren las apps — GET temporal solo para la simulación
     fetch("/api/seller/pedidos")
-    .then((res) => res.json())
-    .then((data) => setPedidos(Array.isArray(data) ? data : []))
-    .catch(() => setPedidos([]));
+      .then((res) => res.json())
+      .then((data) => setPedidos(Array.isArray(data) ? data : []))
+      .catch(() => setPedidos([]));
   }, []);
 
-  
-  // Acción 1: trae todos los eventos disponibles (reutiliza el endpoint de buyer)
-  async function pedirEventos() {
+  // Acción 1: trae el detalle de un evento específico (igual que hace buyer)
+  async function pedirDetalleEvento() {
     setLoading(true);
-    const res = await fetch("/api/buyer/eventos");
+    const res = await fetch(`/api/buyer/eventos/${idEvento}`);
     const data = await res.json();
     setRespuesta(data);
     setLoading(false);
@@ -74,67 +73,73 @@ export default function PaymentsSimulacion() {
 
       <div className="flex flex-col gap-6">
 
-        {/* Acción 1: ver todos los eventos disponibles */}
-        <button
-          onClick={pedirEventos}
-          className="w-fit px-4 py-2 bg-slate-100 rounded hover:bg-slate-200"
-        >
-          Pedir todos los eventos
-        </button>
+        {/* Acción 1 y 3 comparten el mismo select de evento */}
+        <div className="flex flex-col gap-3">
+          <p className="text-sm text-slate-500">Seleccioná un evento para las acciones 1 y 3:</p>
+          <div className="flex items-center gap-2">
+            <select
+              value={idEvento}
+              onChange={(e) => setIdEvento(e.target.value)}
+              className="border rounded px-3 py-2"
+            >
+              <option value="">Seleccionar evento</option>
+              {eventos.map((e) => (
+                <option key={e.idEvento} value={e.idEvento}>
+                  #{e.idEvento} — {e.nombreEvento}
+                </option>
+              ))}
+            </select>
 
-      {/* Acción 2: confirmar o cancelar un pago por idPedido */}
-<div className="flex items-center gap-2">
-  <select
-    value={idPedido}
-    onChange={(e) => setIdPedido(e.target.value)}
-    className="border rounded px-3 py-2"
-  >
-    <option value="">Seleccionar pedido</option>
-    {pedidos.map((p) => (
-      <option key={p.idPedido} value={p.idPedido}>
-        #{p.idPedido} — Evento {p.idEvento} — {p.estado} — ${p.monto}
-      </option>
-    ))}
-  </select>
+            {/* Acción 1: pedir detalle del evento seleccionado */}
+            <button
+              onClick={pedirDetalleEvento}
+              disabled={!idEvento}
+              className="px-4 py-2 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-40"
+            >
+              Pedir detalle evento
+            </button>
 
-  <select
-    value={estadoTransaccion}
-    onChange={(e) => setEstadoTransaccion(e.target.value)}
-    className="border rounded px-3 py-2"
-  >
-    <option value="pagado">Pagado</option>
-    <option value="cancelado">Cancelado</option>
-  </select>
+            {/* Acción 3: obtener organizador del evento seleccionado */}
+            <button
+              onClick={obtenerOrganizador}
+              disabled={!idEvento}
+              className="px-4 py-2 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-40"
+            >
+              Obtener organizador
+            </button>
+          </div>
+        </div>
 
-  <button
-    onClick={enviarEstado}
-    disabled={!idPedido}
-    className="px-4 py-2 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-40"
-  >
-    Enviar estado de transaccion
-  </button>
-</div>
-
-        {/* Acción 3: obtener organizador del evento para acreditarle el pago */}
+        {/* Acción 2: confirmar o cancelar un pago por idPedido */}
         <div className="flex items-center gap-2">
           <select
-            value={idEvento}
-            onChange={(e) => setIdEvento(e.target.value)}
+            value={idPedido}
+            onChange={(e) => setIdPedido(e.target.value)}
             className="border rounded px-3 py-2"
           >
-            <option value="">Seleccionar evento</option>
-            {eventos.map((e) => (
-              <option key={e.idEvento} value={e.idEvento}>
-                #{e.idEvento} — {e.nombreEvento}
+            <option value="">Seleccionar pedido</option>
+            {pedidos.map((p) => (
+              <option key={p.idPedido} value={p.idPedido}>
+                #{p.idPedido} — Evento {p.idEvento} — {p.estado} — ${p.monto}
               </option>
             ))}
           </select>
+
+          <select
+            value={estadoTransaccion}
+            onChange={(e) => setEstadoTransaccion(e.target.value)}
+            className="border rounded px-3 py-2"
+          >
+            <option value="pagado">Pagado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+
           <button
-            onClick={obtenerOrganizador}
-            disabled={!idEvento}
+            onClick={enviarEstado}
+            disabled={!idPedido}
             className="px-4 py-2 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-40"
           >
-            Obtener organizador
+            Enviar estado de transaccion
           </button>
         </div>
 
