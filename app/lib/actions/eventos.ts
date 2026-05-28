@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 import { isAdmin } from "@/app/lib/admin";
 import { type FormValues } from "@/app/ui/formularioEvento";
 
-export async function upsertEventoAction(idEvento: number | null, data: FormValues) {
+export async function upsertEventoAction(idEvento: number | null, data: FormValues, imagenes: string[] = []) {
   const { userId } = await auth();
   if (!userId) throw new Error("No autorizado");
 
@@ -31,6 +31,7 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
     precio: Number(data.precio),
     categoria: data.categoria,
     idOrganizador: userId,
+    imagenes,
   };
 
   try {

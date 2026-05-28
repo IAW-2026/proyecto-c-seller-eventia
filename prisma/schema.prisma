@@ -16,6 +16,7 @@ model eventos {
   idOrganizador String?
   precio        Float?  @db.Real
   categoria     String?
+  imagenes      String[] @default([])
 
   organizador   organizadores? @relation(fields: [idOrganizador], references: [idOrganizador])
   pedidos       pedidos[]

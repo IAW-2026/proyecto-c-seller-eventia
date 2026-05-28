@@ -26,6 +26,7 @@ type Props = {
   isSubmitting: boolean;
   handleSubmit: UseFormHandleSubmit<FormValues>;
   onSubmit: (data: FormValues) => Promise<void>;
+  onImagenesChange: (urls: string[]) => void;
   idEvento?: number | null;
   watchDireccion?: string;
   watchCiudad?: string;
@@ -38,6 +39,7 @@ export default function NuevoEventoForm({
   isSubmitting,
   handleSubmit,
   onSubmit,
+  onImagenesChange,
   idEvento,
   watchDireccion = '',
   watchCiudad = '',
@@ -248,7 +250,7 @@ export default function NuevoEventoForm({
             </div>
             <h2 className="font-semibold text-slate-800 text-lg">Multimedia</h2>
           </div>
-          <CargaImagenes />
+          <CargaImagenes onChange={onImagenesChange} />
         </section>
 
         {/* Botones */}

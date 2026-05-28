@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NuevoEventoForm, { FormValues } from '@/app/ui/formularioEvento';
 import { upsertEventoAction } from '@/app/lib/actions/eventos';
@@ -10,7 +11,9 @@ interface Props {
 }
 
 export default function FormularioEventoClient({ eventoInicial }: Props) {
-  // Para el modo editar, separamos ubicacion en dirección y ciudad
+  // Guarda las URLs reales subidas a Uploadthing para enviarlas con el formulario
+  const [imagenes, setImagenes] = useState<string[]>(eventoInicial?.imagenes ?? []);
+
   const ubicacion = eventoInicial?.ubicacion ?? '';
   const partes = ubicacion.split(',');
   const ciudadInicial = partes.length > 1 ? partes.pop()?.trim() ?? '' : '';
@@ -43,7 +46,8 @@ export default function FormularioEventoClient({ eventoInicial }: Props) {
   const watchCiudad = watch('ciudad');
 
   const onSubmit = async (data: FormValues) => {
-    const result = await upsertEventoAction(eventoInicial?.idEvento ?? null, data);
+    // Pasa las URLs de las imágenes junto con los datos del formulario
+    const result = await upsertEventoAction(eventoInicial?.idEvento ?? null, data, imagenes);
     if (result?.error) {
       alert(result.error);
     }
@@ -56,6 +60,7 @@ export default function FormularioEventoClient({ eventoInicial }: Props) {
       isSubmitting={isSubmitting}
       handleSubmit={handleSubmit}
       onSubmit={onSubmit}
+      onImagenesChange={setImagenes}
       idEvento={eventoInicial?.idEvento}
       watchDireccion={watchDireccion}
       watchCiudad={watchCiudad}
