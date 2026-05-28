@@ -25,7 +25,7 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
   const payload = {
     nombreEvento: data.nombreEvento,
     descripcion: data.descripcion,
-    fecha: new Date(`${data.fecha}T${data.hora}`),
+    fecha: new Date(`${data.fecha}T${data.hora}:00-03:00`),
     ubicacion: `${data.direccion}, ${data.ciudad}`,
     stock: Number(data.stock),
     precio: Number(data.precio),

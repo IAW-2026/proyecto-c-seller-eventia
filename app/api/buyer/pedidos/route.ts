@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 
+const SELLER_URL = process.env.SELLER_BASE_URL;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { idEvento, idUsuario, cantEntradas } = body;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/pedidos`,
+      `${SELLER_URL}/api/seller/pedidos`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

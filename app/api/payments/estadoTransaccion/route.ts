@@ -1,5 +1,6 @@
-// app/api/payments/estadoTransaccion/route.ts
 import { NextResponse } from "next/server";
+
+const SELLER_URL = process.env.SELLER_BASE_URL;
 
 export async function POST(request: Request) {
   try {
@@ -7,7 +8,7 @@ export async function POST(request: Request) {
     const { idPedido, estadoTransaccion } = body;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/estadoTransaccion`,
+      `${SELLER_URL}/api/seller/estadoTransaccion`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -41,7 +41,15 @@ export default function EventoCard({ evento, onModificar, onEliminar }: Props) {
           {evento.ubicacion}
         </li>
         <li className="border-b border-slate-200 px-4 py-2 text-sm">
-          {new Date(evento.fecha).toLocaleString()}
+          {new Date(evento.fecha).toLocaleString('es-AR', {
+            timeZone: 'America/Argentina/Buenos_Aires',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+          })}
         </li>
         <li className="border-b border-slate-200 px-4 py-2 text-sm"> Entrada </li>
       </ul>

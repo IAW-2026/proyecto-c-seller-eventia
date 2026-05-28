@@ -1,6 +1,7 @@
 import prisma from "../../../lib/prisma";
 import { NextResponse } from "next/server";
 
+const BUYER_URL = process.env.BUYER_BASE_URL;
 
 export async function POST(request: Request) {
   try {
@@ -21,11 +22,13 @@ export async function POST(request: Request) {
       });
     }
 
+    const idsCancelados: number[] = [];
+
     const pedido = await prisma.$transaction(async (tx) => {
       // 1. LIMPIEZA BAJO DEMANDA: Liberar stock de pedidos PENDIENTE de más de 15 min
       // Esto evita que el stock quede bloqueado si el usuario abandona la compra.
       const expiracion = new Date(Date.now() - 15 * 60 * 1000);
-      
+
       const pedidosExpirados = await tx.pedidos.findMany({
         where: {
           idEvento,
@@ -43,6 +46,15 @@ export async function POST(request: Request) {
           where: { idPedido: p.idPedido },
           data: { estado: "CANCELADO" },
         });
+        idsCancelados.push(p.idPedido);
+      }
+      // le mando a buyer
+      if (idsCancelados.length > 0) {
+        fetch(`${BUYER_URL}/api/buyer/pedidoCancelado`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idsPedidos: idsCancelados }),
+        }).catch((err) => console.error("Error notificando buyer pedidos cancelados:", err));
       }
 
       // 2. OBTENER DATOS DEL EVENTO

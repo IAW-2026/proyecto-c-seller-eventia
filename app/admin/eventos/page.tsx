@@ -28,7 +28,7 @@ export default async function AdminEventosPage({
       take: POR_PAGINA,
       include: {
         organizador: { select: { nombreOrganizador: true, apellido: true } },
-        _count: { select: { pedidos: true } },
+        _count: { select: { pedidos: { where: { estado: 'PAGADO' } } } },
       },
     }),
     prisma.eventos.count({ where }),

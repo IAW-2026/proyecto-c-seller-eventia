@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 
+const SELLER_URL = process.env.SELLER_BASE_URL;
+
 export async function GET(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ idEvento: string }> }
 ) {
   const { idEvento } = await params;
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/eventos/${idEvento}`
+      `${SELLER_URL}/api/seller/eventos/${idEvento}`
     );
 
     if (!response.ok) {

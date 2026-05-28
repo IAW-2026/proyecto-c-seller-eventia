@@ -44,7 +44,12 @@ export default function TablaEventosAdmin({ eventos }: { eventos: EventoAdmin[] 
                 <td className="px-4 py-3 text-slate-500">{e.categoria ?? '—'}</td>
                 <td className="px-4 py-3 text-slate-500">{e.ubicacion ?? '—'}</td>
                 <td className="px-4 py-3 text-slate-500">
-                  {e.fecha ? new Date(e.fecha).toLocaleDateString() : '—'}
+                  {e.fecha ? new Date(e.fecha).toLocaleDateString('es-AR', {
+                    timeZone: 'America/Argentina/Buenos_Aires',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  }) : '—'}
                 </td>
                 <td className="px-4 py-3 text-right text-slate-800">
                   ${e.precio?.toLocaleString() ?? '—'}

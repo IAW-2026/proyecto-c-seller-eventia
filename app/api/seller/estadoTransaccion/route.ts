@@ -1,6 +1,8 @@
 import prisma from "../../../lib/prisma";
 import { NextResponse } from "next/server";
 
+const BUYER_URL = process.env.BUYER_BASE_URL;
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
       return new Response(null, { status: 204 });
     }
 
-    if (estadoTransaccion === "pagado") {
+    if (estadoTransaccion === "APROBADA") {
       await prisma.pedidos.update({
         where: { idPedido },
         data: { estado: "PAGADO" },
@@ -45,7 +47,7 @@ export async function POST(request: Request) {
       return NextResponse.json(pedidoActualizado, { status: 200 });
     }
 
-    if (estadoTransaccion === "cancelado") {
+    if (estadoTransaccion === "CANCELADA" || estadoTransaccion === "FALLIDA") {
       await prisma.$transaction(async (tx) => {
         await tx.eventos.update({
           where: { idEvento: pedido.idEvento as number },
@@ -57,6 +59,12 @@ export async function POST(request: Request) {
           data: { estado: "CANCELADO" },
         });
       });
+
+      fetch(`${BUYER_URL}/api/buyer/pedidoCancelado`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idsPedidos: [idPedido] }),
+      }).catch((err) => console.error("Error notificando buyer pedido cancelado:", err));
 
        // TODO: quitar cuando se integren las apps — se devuelve el pedido y stock actualizado
        // solo para que la simulación pueda visualizar los cambios en ambas tablas
