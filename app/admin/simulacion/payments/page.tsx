@@ -15,7 +15,7 @@ export default function PaymentsSimulacion() {
   const [pedidos, setPedidos] = useState<any[]>([]);
   const [idEvento, setIdEvento] = useState("");
   const [idPedido, setIdPedido] = useState("");
-  const [estadoTransaccion, setEstadoTransaccion] = useState("pagado");
+  const [estadoTransaccion, setEstadoTransaccion] = useState("APROBADA");
 
   // Carga eventos y pedidos al montar para poblar los selects
   useEffect(() => {
@@ -54,6 +54,15 @@ export default function PaymentsSimulacion() {
     setLoading(false);
   }
 
+  // Test API key: llama directo al seller sin pasar por el proxy (sin key) → debe dar 401
+  async function testApiKey() {
+    setLoading(true);
+    const res = await fetch("/api/seller/eventos");
+    const data = await res.json().catch(() => ({ status: res.status }));
+    setRespuesta({ _test: "sin api key", status: res.status, respuesta: data });
+    setLoading(false);
+  }
+
   // Acción 3: obtiene el organizador del evento para saber a quién acreditar el pago
   async function obtenerOrganizador() {
     setLoading(true);
@@ -70,6 +79,17 @@ export default function PaymentsSimulacion() {
   return (
     <div className="p-8 flex flex-col gap-6">
       <h1 className="text-2xl font-bold">Simulacion Payments</h1>
+
+      {/* Test middleware API key */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={testApiKey}
+          className="px-4 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200"
+        >
+          Test API key (sin key → 401)
+        </button>
+        <span className="text-xs text-slate-400">Llama directo a /api/seller/eventos sin header</span>
+      </div>
 
       <div className="flex flex-col gap-6">
 
@@ -130,8 +150,9 @@ export default function PaymentsSimulacion() {
             onChange={(e) => setEstadoTransaccion(e.target.value)}
             className="border rounded px-3 py-2"
           >
-            <option value="pagado">Pagado</option>
-            <option value="cancelado">Cancelado</option>
+            <option value="APROBADA">Aprobada</option>
+            <option value="CANCELADA">Cancelada</option>
+            <option value="FALLIDA">Fallida</option>
           </select>
 
           <button

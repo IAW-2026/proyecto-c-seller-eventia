@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     const pedido = await prisma.$transaction(async (tx) => {
       // 1. LIMPIEZA BAJO DEMANDA: Liberar stock de pedidos PENDIENTE de más de 15 min
       // Esto evita que el stock quede bloqueado si el usuario abandona la compra.
-      const expiracion = new Date(Date.now() - 15 * 60 * 1000);
+      const expiracion = new Date(Date.now() - 5 * 60 * 1000);
 
       const pedidosExpirados = await tx.pedidos.findMany({
         where: {
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       if (idsCancelados.length > 0) {
         fetch(`${BUYER_URL}/api/buyer/pedidoCancelado`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-api-key": process.env.BUYER_API_KEY as string },
           body: JSON.stringify({ idsPedidos: idsCancelados }),
         }).catch((err) => console.error("Error notificando buyer pedidos cancelados:", err));
       }
@@ -99,9 +99,9 @@ export async function POST(request: Request) {
           monto: true,
         },
       });
-    });
+    }, { maxWait: 10000, timeout: 15000 });
 
-    return new Response(JSON.stringify(pedido), {
+    return new Response(JSON.stringify({ ...pedido, pedidosCancelados: idsCancelados }), {
       status: 201,
       headers: { "Content-Type": "application/json" },
     });
@@ -123,7 +123,8 @@ export async function POST(request: Request) {
     }
 
     console.error(err);
-    return new Response(JSON.stringify({ error: "Error del servidor" }), {
+    const detalle = err instanceof Error ? err.message : String(err);
+    return new Response(JSON.stringify({ error: "Error del servidor", detalle }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

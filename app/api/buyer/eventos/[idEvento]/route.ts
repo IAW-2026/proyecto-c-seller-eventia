@@ -9,7 +9,8 @@ export async function GET(
   const { idEvento } = await params;
   try {
     const response = await fetch(
-      `${SELLER_URL}/api/seller/eventos/${idEvento}`
+      `${SELLER_URL}/api/seller/eventos/${idEvento}`,
+      { headers: { "x-api-key": process.env.SELLER_API_KEY as string } }
     );
 
     if (!response.ok) {

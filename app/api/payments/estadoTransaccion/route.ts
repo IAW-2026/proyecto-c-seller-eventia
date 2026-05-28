@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       `${SELLER_URL}/api/seller/estadoTransaccion`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-api-key": process.env.SELLER_API_KEY as string },
         body: JSON.stringify({ idPedido, estadoTransaccion }),
       }
     );

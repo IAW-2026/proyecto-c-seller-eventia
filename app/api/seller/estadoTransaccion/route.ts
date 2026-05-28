@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const idPedido = Number(body.idPedido);
-    const estadoTransaccion = String(body.estadoTransaccion ?? "").toLowerCase();
+    const estadoTransaccion = String(body.estadoTransaccion ?? "");
 
     if (!Number.isInteger(idPedido) || !estadoTransaccion) {
       return new Response(null, { status: 400 });
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
 
       fetch(`${BUYER_URL}/api/buyer/pedidoCancelado`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-api-key": process.env.BUYER_API_KEY as string },
         body: JSON.stringify({ idsPedidos: [idPedido] }),
       }).catch((err) => console.error("Error notificando buyer pedido cancelado:", err));
 

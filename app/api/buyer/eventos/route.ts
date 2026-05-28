@@ -5,7 +5,8 @@ const SELLER_URL = process.env.SELLER_BASE_URL;
 export async function GET() {
   try {
     const response = await fetch(
-      `${SELLER_URL}/api/seller/eventos`
+      `${SELLER_URL}/api/seller/eventos`,
+      { headers: { "x-api-key": process.env.SELLER_API_KEY as string } }
     );
 
     if (!response.ok) {
