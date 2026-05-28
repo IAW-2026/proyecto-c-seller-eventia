@@ -5,11 +5,12 @@ import EliminarEventoButton from '@/app/ui/botones/eliminarEvento';
 
 export type Evento = {
   idEvento: number;
-  nombreEvento: string | null;
-  descripcion: string | null;
-  ubicacion: string | null;
-  fecha: string | null;
-  precio: number | null;
+  nombreEvento: string;
+  descripcion: string;
+  ubicacion: string;
+  fecha: string;
+  precio: number;
+  categoria: string;
 };
 
 type Props = {
@@ -27,20 +28,20 @@ export default function EventoCard({ evento, onModificar, onEliminar }: Props) {
 
       <div className="p-4">
         <h3 className="mb-2 text-lg font-semibold text-slate-900">
-          {evento.nombreEvento ?? 'Sin nombre'}
+          {evento.nombreEvento}
         </h3>
 
         <p className="text-sm text-slate-600">
-          {evento.descripcion ?? 'Sin descripción'}
+          {evento.descripcion}
         </p>
       </div>
 
       <ul className="border-t border-slate-200">
         <li className="border-b border-slate-200 px-4 py-2 text-sm">
-          {evento.ubicacion ?? 'Sin ubicación'}
+          {evento.ubicacion}
         </li>
         <li className="border-b border-slate-200 px-4 py-2 text-sm">
-          {evento.fecha ? new Date(evento.fecha).toLocaleString() : 'Sin fecha'}
+          {new Date(evento.fecha).toLocaleString()}
         </li>
         <li className="border-b border-slate-200 px-4 py-2 text-sm"> Entrada </li>
       </ul>

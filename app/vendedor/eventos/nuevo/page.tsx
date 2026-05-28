@@ -23,9 +23,6 @@ export default async function NuevoEventoPage({
   // Si es una creación nueva, eventoInicial es null y el form aparece vacío.
   // Si es edición, le pasamos los datos y el form aparece lleno.
   return (
-    <FormularioEventoClient 
-      eventoInicial={eventoInicial} 
-      idEvento={idNum} 
-    />
+    <FormularioEventoClient eventoInicial={eventoInicial} />
   );
 }

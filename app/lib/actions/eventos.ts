@@ -4,24 +4,33 @@ import prisma from "@/app/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { getOrCreateOrganizador } from "@/app/lib/actions/organizadores";
 import { isAdmin } from "@/app/lib/admin";
+import { type FormValues } from "@/app/ui/formularioEvento";
 
-export async function upsertEventoAction(idEvento: number | null, data: any) {
+export async function upsertEventoAction(idEvento: number | null, data: FormValues) {
   const { userId } = await auth();
   if (!userId) throw new Error("No autorizado");
 
   const admin = await isAdmin();
 
-  const organizador = await getOrCreateOrganizador();
+  if (!data.nombreEvento?.trim()) return { error: "El nombre del evento es obligatorio" };
+  if (!data.descripcion?.trim()) return { error: "La descripción es obligatoria" };
+  if (!data.fecha) return { error: "La fecha es obligatoria" };
+  if (!data.hora) return { error: "La hora es obligatoria" };
+  if (!data.direccion?.trim()) return { error: "La dirección es obligatoria" };
+  if (!data.ciudad?.trim()) return { error: "La ciudad es obligatoria" };
+  if (data.stock === '' || data.stock === null || data.stock === undefined) return { error: "La capacidad es obligatoria" };
+  if (data.precio === '' || data.precio === null || data.precio === undefined) return { error: "El precio es obligatorio" };
+
   const payload = {
     nombreEvento: data.nombreEvento,
     descripcion: data.descripcion,
-    fecha: data.fecha ? new Date(`${data.fecha}T${data.hora ?? '00:00'}`) : null,
-    ubicacion: [data.direccion, data.ciudad].filter(Boolean).join(', ') || null,
-    stock: data.stock ? Number(data.stock) : null,
-    precio: data.precio ? Number(data.precio) : null,
-    idOrganizador: organizador.idOrganizador,
+    fecha: new Date(`${data.fecha}T${data.hora}`),
+    ubicacion: `${data.direccion}, ${data.ciudad}`,
+    stock: Number(data.stock),
+    precio: Number(data.precio),
+    categoria: data.categoria,
+    idOrganizador: userId,
   };
 
   try {
@@ -41,6 +50,7 @@ export async function upsertEventoAction(idEvento: number | null, data: any) {
   }
 
   revalidatePath('/vendedor/eventos');
+  revalidatePath('/admin/eventos');
   redirect('/vendedor/eventos');
 }
 
@@ -57,6 +67,7 @@ export async function deleteEventoAction(idEvento: number) {
 
     await prisma.eventos.delete({ where: { idEvento } });
     revalidatePath('/vendedor/eventos');
+    revalidatePath('/admin/eventos');
     return { success: true };
   } catch (error) {
     console.error("Error al eliminar evento:", error);

@@ -24,16 +24,15 @@ export async function getOrCreateOrganizador() {
   const email = user.emailAddresses[0]?.emailAddress ?? null;
   
  //agrego el rol de seller a los usuarios que se crean desde esta función
-  const currentRoles =(user.publicMetadata.roles as string[]) || [];
-  //combinar con 'seller' por si es buyer o tiene otros roles, para no sobreescribirlos
-  const updatedRoles = [...currentRoles, 'seller'];
-  // guardar en clerk el nuevo rol de seller (para que se refleje en el jwt y se pueda usar desde shipping)
-  const client = await clerkClient();
-  await client.users.updateUserMetadata(userId, {
-    publicMetadata: {
-      roles: updatedRoles,
-    },
-  });
+  const currentRoles = (user.publicMetadata.roles as string[]) || [];
+  if (!currentRoles.includes('seller')) {
+    const client = await clerkClient();
+    await client.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        roles: [...currentRoles, 'seller'],
+      },
+    });
+  }
   
   const organizador = await prisma.organizadores.upsert({
     where: { idOrganizador: userId },
@@ -57,5 +56,3 @@ export async function getOrCreateOrganizador() {
     email,
   };
 }
-
-export const ensureOrganizador = getOrCreateOrganizador;

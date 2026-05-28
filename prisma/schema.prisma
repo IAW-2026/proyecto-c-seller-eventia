@@ -15,6 +15,7 @@ model eventos {
   stock         Int?
   idOrganizador String?
   precio        Float?  @db.Real
+  categoria     String?
 
   organizador   organizadores? @relation(fields: [idOrganizador], references: [idOrganizador])
   pedidos       pedidos[]
@@ -41,7 +42,7 @@ model pedidos {
   idUsuario     String?
   idEvento      Int?
   cantEntradas  Int?
-  monto         Float?  @db.Real
+  monto         Float   @db.Real
   estado        EstadoPedido
   createdAt     DateTime     @default(now())
 

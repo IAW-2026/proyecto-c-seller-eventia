@@ -3,13 +3,13 @@
 import { useForm } from 'react-hook-form';
 import NuevoEventoForm, { FormValues } from '@/app/ui/formularioEvento';
 import { upsertEventoAction } from '@/app/lib/actions/eventos';
+import { type eventos } from '@prisma/client';
 
 interface Props {
-  eventoInicial?: any;
-  idEvento?: number | null;
+  eventoInicial?: eventos | null;
 }
 
-export default function FormularioEventoClient({ eventoInicial, idEvento }: Props) {
+export default function FormularioEventoClient({ eventoInicial }: Props) {
   // Para el modo editar, separamos ubicacion en dirección y ciudad
   const ubicacion = eventoInicial?.ubicacion ?? '';
   const partes = ubicacion.split(',');
@@ -35,6 +35,7 @@ export default function FormularioEventoClient({ eventoInicial, idEvento }: Prop
       ciudad: ciudadInicial,
       stock: eventoInicial?.stock?.toString() ?? '',
       precio: eventoInicial?.precio?.toString() ?? '',
+      categoria: eventoInicial?.categoria ?? 'Música y espectáculos',
     },
   });
 
@@ -42,7 +43,7 @@ export default function FormularioEventoClient({ eventoInicial, idEvento }: Prop
   const watchCiudad = watch('ciudad');
 
   const onSubmit = async (data: FormValues) => {
-    const result = await upsertEventoAction(idEvento ?? null, data);
+    const result = await upsertEventoAction(eventoInicial?.idEvento ?? null, data);
     if (result?.error) {
       alert(result.error);
     }
@@ -55,7 +56,7 @@ export default function FormularioEventoClient({ eventoInicial, idEvento }: Prop
       isSubmitting={isSubmitting}
       handleSubmit={handleSubmit}
       onSubmit={onSubmit}
-      idEvento={idEvento}
+      idEvento={eventoInicial?.idEvento}
       watchDireccion={watchDireccion}
       watchCiudad={watchCiudad}
     />

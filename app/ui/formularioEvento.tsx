@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { FieldErrors, UseFormHandleSubmit, UseFormRegister } from 'react-hook-form';
 import CargaImagenes from './cargaImagenes';
 import { Calendar, Clock, MapPin, FileText, Ticket, Image } from 'lucide-react';
+import { CATEGORIAS } from '@/app/lib/constants';
 
 const MapaEvento = dynamic(() => import('./mapaEvento'), { ssr: false });
 
@@ -17,6 +17,7 @@ export type FormValues = {
   ciudad: string;
   stock: string;
   precio: string;
+  categoria: string;
 };
 
 type Props = {
@@ -30,7 +31,6 @@ type Props = {
   watchCiudad?: string;
 };
 
-const CATEGORIAS = ['Corporativo', 'Social', 'Concierto', 'Taller', 'Deportivo', 'Arte'];
 
 export default function NuevoEventoForm({
   register,
@@ -42,8 +42,6 @@ export default function NuevoEventoForm({
   watchDireccion = '',
   watchCiudad = '',
 }: Props) {
-  const [categoria, setCategoria] = useState('Corporativo');
-
   const textoMapa = [watchDireccion, watchCiudad].filter(Boolean).join(', ');
 
   return (
@@ -118,9 +116,12 @@ export default function NuevoEventoForm({
                 <input
                   type="date"
                   className="w-full h-12 pl-10 pr-4 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  {...register('fecha')}
+                  {...register('fecha', { required: 'La fecha es obligatoria' })}
                 />
               </div>
+              {errors.fecha && (
+                <p className="text-xs text-red-500">{errors.fecha.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -132,9 +133,12 @@ export default function NuevoEventoForm({
                 <input
                   type="time"
                   className="w-full h-12 pl-10 pr-4 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  {...register('hora')}
+                  {...register('hora', { required: 'La hora es obligatoria' })}
                 />
               </div>
+              {errors.hora && (
+                <p className="text-xs text-red-500">{errors.hora.message}</p>
+              )}
             </div>
           </div>
 
@@ -149,9 +153,12 @@ export default function NuevoEventoForm({
                   type="text"
                   placeholder="Ej. Av. Corrientes 1234"
                   className="w-full h-12 pl-10 pr-4 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  {...register('direccion')}
+                  {...register('direccion', { required: 'La dirección es obligatoria' })}
                 />
               </div>
+              {errors.direccion && (
+                <p className="text-xs text-red-500">{errors.direccion.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -162,8 +169,11 @@ export default function NuevoEventoForm({
                 type="text"
                 placeholder="Ej. Buenos Aires"
                 className="w-full h-12 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                {...register('ciudad')}
+                {...register('ciudad', { required: 'La ciudad es obligatoria' })}
               />
+              {errors.ciudad && (
+                <p className="text-xs text-red-500">{errors.ciudad.message}</p>
+              )}
             </div>
           </div>
 
@@ -193,7 +203,7 @@ export default function NuevoEventoForm({
                   step="0.01"
                   placeholder="0.00"
                   className="flex-1 px-3 rounded-r-lg border border-slate-200 bg-white text-slate-900 text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                  {...register('precio', { min: { value: 0, message: 'No puede ser negativo' } })}
+                  {...register('precio', { required: 'El precio es obligatorio', min: { value: 0, message: 'No puede ser negativo' } })}
                 />
               </div>
               {errors.precio && (
@@ -209,7 +219,7 @@ export default function NuevoEventoForm({
                 type="number"
                 placeholder="100"
                 className="w-full h-12 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                {...register('stock', { min: { value: 0, message: 'No puede ser negativo' } })}
+                {...register('stock', { required: 'La capacidad es obligatoria', min: { value: 0, message: 'No puede ser negativo' } })}
               />
               {errors.stock && (
                 <p className="text-xs text-red-500">{errors.stock.message}</p>
@@ -221,9 +231,8 @@ export default function NuevoEventoForm({
                 Categoría
               </label>
               <select
-                value={categoria}
-                onChange={(e) => setCategoria(e.target.value)}
                 className="w-full h-12 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                {...register('categoria')}
               >
                 {CATEGORIAS.map((c) => <option key={c}>{c}</option>)}
               </select>
