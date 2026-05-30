@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
 
-
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -20,9 +19,7 @@ const DEFAULT_CENTER: [number, number] = [-34.6037, -58.3816];
 
 export default function MapaEvento({ texto }: Props) {
   const mapRef = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
-
 
   useEffect(() => {
     if (!texto || texto.trim().length < 5) return;
@@ -46,7 +43,7 @@ export default function MapaEvento({ texto }: Props) {
   }, [texto]);
 
   return (
-    <div className="w-full h-64 rounded-xl overflow-hidden border border-gray-200">
+    <div className="h-[180px] w-full overflow-hidden rounded-[22px] border border-[#e6d3c2] bg-[#f8f0df] sm:h-[220px] lg:h-[244px]">
       <MapContainer
         ref={mapRef}
         center={DEFAULT_CENTER}
@@ -59,7 +56,6 @@ export default function MapaEvento({ texto }: Props) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
         {markerPos && <Marker position={markerPos} />}
-
       </MapContainer>
     </div>
   );

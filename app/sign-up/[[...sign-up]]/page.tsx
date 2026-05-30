@@ -2,8 +2,10 @@ import { SignUp } from '@clerk/nextjs';
 
 export default function SignUpPage() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <SignUp />
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      {/* forceRedirectUrl garantiza que Clerk vaya a /auth/redirect al registrarse,
+          donde se decide si el usuario es admin (/admin) o vendedor (/vendedor) */}
+      <SignUp forceRedirectUrl="/auth/redirect" />
     </div>
   );
 }

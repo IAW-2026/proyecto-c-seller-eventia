@@ -14,12 +14,5 @@ export default async function NuevoEventoAdminPage({
       ? await prisma.eventos.findUnique({ where: { idEvento: Number(idEvento) } })
       : null;
 
-  return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">
-        {modo === 'editar' ? 'Editar Evento' : 'Crear Evento'}
-      </h1>
-      <FormularioEventoVendedor eventoInicial={eventoInicial} />
-    </div>
-  );
+  return <FormularioEventoVendedor eventoInicial={eventoInicial} />;
 }

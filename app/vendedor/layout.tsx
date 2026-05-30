@@ -1,4 +1,5 @@
 import { getOrCreateOrganizador } from "@/app/lib/actions/organizadores";
+import AuthShell from "@/app/ui/authShell";
 import SidebarVendedor from "@/app/ui/vendedor/sidebarVendedor";
 
 export default async function SellerLayout({
@@ -9,11 +10,6 @@ export default async function SellerLayout({
   await getOrCreateOrganizador();
 
   return (
-    <div className="flex flex-1">
-      <SidebarVendedor />
-      <main className="flex-1 bg-slate-50">
-        {children}
-      </main>
-    </div>
+    <AuthShell sidebar={<SidebarVendedor />}>{children}</AuthShell>
   );
 }

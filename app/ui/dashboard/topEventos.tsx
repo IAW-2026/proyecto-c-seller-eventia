@@ -10,29 +10,29 @@ type TopEvento = {
 
 export default function TopEventos({ eventos }: { eventos: TopEvento[] }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <div className="flex items-center gap-2 mb-5">
-        <Trophy size={18} className="text-amber-500" />
-        <h2 className="font-semibold text-slate-800">Top Eventos</h2>
-        <span className="text-xs text-slate-400 ml-1">por recaudación</span>
+    <div className="rounded-xl border border-[#e8ddd5] bg-white p-5">
+      <div className="flex items-center gap-2 text-[#1a0a0a]">
+        <Trophy size={16} className="text-[#d4848a]" />
+        <h2 className="text-[13px] font-semibold">Top eventos</h2>
+        <span className="ml-1 text-[11px] text-[#a08078]">por recaudación</span>
       </div>
 
       {eventos.length === 0 ? (
-        <p className="text-sm text-slate-400 text-center py-8">Sin datos aún</p>
+        <p className="py-8 text-center text-sm text-[#a08078]">Sin datos aún</p>
       ) : (
-        <div className="space-y-4">
+        <div className="mt-4">
           {eventos.map((e, i) => (
-            <div key={e.idEvento} className="flex items-center gap-4">
-              <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-500 text-xs font-bold flex items-center justify-center shrink-0">
+            <div key={e.idEvento} className="flex items-center gap-3 border-b border-[#f0e8e0] py-3 last:border-b-0 last:pb-0">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#f5e8e4] text-[10px] font-bold text-[#8B1010]">
                 {i + 1}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-slate-800 truncate">{e.nombreEvento}</p>
-                <p className="text-xs text-slate-400">{e.categoria}</p>
+                <p className="truncate text-[13px] font-medium text-[#1a0a0a]">{e.nombreEvento}</p>
+                <p className="text-[11px] text-[#a08078]">{e.categoria}</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-sm font-semibold text-slate-900">${e.monto.toLocaleString()}</p>
-                <p className="text-xs text-slate-400">{e.entradas} entradas</p>
+                <p className="text-[13px] font-semibold text-[#8B1010]">${e.monto.toLocaleString()}</p>
+                <p className="text-[11px] text-[#a08078]">{e.entradas} entradas</p>
               </div>
             </div>
           ))}

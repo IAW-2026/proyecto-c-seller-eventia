@@ -11,7 +11,7 @@ export default function EliminarEventoButton({ onClick, disabled = false }: Prop
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="border border-black bg-white px-3 py-1 text-sm disabled:opacity-50"
+      className="flex-1 rounded-full bg-[var(--color-accent)] px-4 py-3 text-sm font-semibold text-[var(--color-accent-foreground)] transition hover:brightness-95 disabled:opacity-50"
     >
       Eliminar
     </button>

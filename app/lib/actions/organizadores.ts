@@ -19,9 +19,10 @@ export async function getOrCreateOrganizador() {
   const clerk = await clerkClient();
   const user = await clerk.users.getUser(userId);
 
-  const nombre = user.firstName ?? null;
-  const apellido = user.lastName ?? null;
   const email = user.emailAddresses[0]?.emailAddress ?? null;
+  // Fallback: si Google/Clerk no trae firstName, usamos username o la parte del email
+  const nombre = user.firstName ?? user.username ?? email?.split('@')[0] ?? null;
+  const apellido = user.lastName ?? null;
   
  //agrego el rol de seller a los usuarios que se crean desde esta función
   const currentRoles = (user.publicMetadata.roles as string[]) || [];

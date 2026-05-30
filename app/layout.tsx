@@ -1,6 +1,21 @@
 import { ClerkProvider } from '@clerk/nextjs';
-import Sidenav from '@/app/ui/sideNav';
 import '@/app/globals.css';
+import type { Metadata } from 'next';
+import { ffBody, ffDisplay, ffLabel } from '@/app/ui/fonts';
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
+
+// Metadata base — las páginas sobreescriben title via template '%s | Eventia'
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Eventia',
+    default: 'Eventia - Plataforma de eventos',
+  },
+  description: 'La plataforma para organizadores de eventos. Creá tu evento, vendé entradas y gestioná todo desde un solo lugar.',
+};
 
 export default async function RootLayout({
   children,
@@ -9,13 +24,11 @@ export default async function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="es">
-        <body className="flex min-h-screen flex-col">
-          <Sidenav />
-          <main className="flex-1 bg-white">{children}</main>
+      <html lang="es" className={cn(ffDisplay.variable, ffBody.variable, ffLabel.variable, "font-sans", geist.variable)}>
+        <body className="flex min-h-screen flex-col bg-[#fcf4e5]">
+          <main className="flex-1">{children}</main>
         </body>
       </html>
     </ClerkProvider>
   );
 }
-

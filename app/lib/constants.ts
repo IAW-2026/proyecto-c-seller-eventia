@@ -2,11 +2,9 @@
 // Centralizar acá evita tener que actualizar múltiples archivos si cambian los valores.
 
 export const CATEGORIAS = [
-  'Música y espectáculos',
-  'Audiovisual',
-  'Deportes',
-  'Entretenimiento general',
-  'Gastronomía exclusiva',
-  'Educación y profesional',
-  'Fiestas y eventos sociales',
+  'Arte y manualidades',
+  'Gastronomía',
+  'Social',
+  'Movimiento',
+  'Musica y espectáculos',
 ] as const;

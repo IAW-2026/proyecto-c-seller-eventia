@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { isAdmin } from '@/app/lib/admin';
 import { getDashboardData } from '@/app/lib/dashboard';
@@ -11,6 +11,9 @@ export default async function DashboardPage() {
   const { userId } = await auth();
   if (!userId) redirect('/sign-in');
 
+  const user = await currentUser();
+  const displayName = user?.firstName ?? user?.fullName ?? user?.username ?? 'usuario';
+
   // Si es admin ve todo, si no filtra por su propio idOrganizador
   const admin = await isAdmin();
   const pedidosWhere = admin ? {} : { idOrganizador: userId };
@@ -22,9 +25,9 @@ export default async function DashboardPage() {
   return (
     <div className="p-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-slate-900">Bienvenido/a, {displayName}</h1>
         <p className="text-slate-500 text-sm mt-1">
-          {admin ? 'Vista global de la plataforma' : 'Tu actividad como organizador'}
+          {admin ? 'Resumen global de la plataforma' : 'Resumen de tu actividad y ventas'}
         </p>
       </div>
 

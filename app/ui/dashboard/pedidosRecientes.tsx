@@ -7,44 +7,50 @@ type Pedido = {
 };
 
 const estadoStyles = {
-  PENDIENTE: 'bg-amber-100 text-amber-700',
-  PAGADO: 'bg-emerald-100 text-emerald-700',
-  CANCELADO: 'bg-red-100 text-red-700',
+  PENDIENTE: 'bg-[#fdf5e0] text-[#b07a10]',
+  PAGADO: 'bg-[#eaf5e8] text-[#3a7a2a]',
+  CANCELADO: 'bg-[#fdf0f0] text-[#8B1010]',
+};
+
+const estadoLabel = {
+  PENDIENTE: 'Pendiente',
+  PAGADO: 'Completado',
+  CANCELADO: 'Cancelado',
 };
 
 export default function PedidosRecientes({ pedidos }: { pedidos: Pedido[] }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <h2 className="font-semibold text-slate-800 mb-1">Pedidos Recientes</h2>
-      <p className="text-xs text-slate-400 mb-5">Las últimas transacciones de tus eventos</p>
+    <div className="rounded-xl border border-[#e8ddd5] bg-white p-5">
+      <h2 className="text-[13px] font-semibold text-[#1a0a0a]">Pedidos recientes</h2>
+      <p className="mb-4 text-[11px] text-[#a08078]">Últimas transacciones de tus eventos</p>
 
       {pedidos.length === 0 ? (
-        <p className="text-sm text-slate-400 text-center py-8">Sin pedidos aún</p>
+        <p className="py-8 text-center text-sm text-[#a08078]">Sin pedidos aún</p>
       ) : (
-        <table className="w-full text-sm">
+        <table className="w-full border-collapse text-[12px]">
           <thead>
-            <tr className="text-xs text-slate-400 uppercase tracking-wide border-b border-slate-100">
-              <th className="text-left pb-3">ID</th>
-              <th className="text-left pb-3">Evento</th>
-              <th className="text-left pb-3">Fecha</th>
-              <th className="text-right pb-3">Monto</th>
-              <th className="text-right pb-3">Estado</th>
+            <tr className="border-b border-[#f0e8e0] text-[11px] uppercase tracking-[0.05em] text-[#a08078]">
+              <th className="pb-3 text-left font-medium">ID</th>
+              <th className="pb-3 text-left font-medium">Evento</th>
+              <th className="pb-3 text-left font-medium">Fecha</th>
+              <th className="pb-3 text-right font-medium">Monto</th>
+              <th className="pb-3 text-right font-medium">Estado</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody>
             {pedidos.map((p) => (
-              <tr key={p.idPedido}>
-                <td className="py-3 text-slate-400 font-mono">#{p.idPedido}</td>
-                <td className="py-3 text-slate-700">{p.evento?.nombreEvento ?? '—'}</td>
-                <td className="py-3 text-slate-500">
+              <tr key={p.idPedido} className="border-b border-[#f0e8e0] last:border-b-0">
+                <td className="py-3 font-mono text-[#a08078]">#{p.idPedido}</td>
+                <td className="py-3 text-[#3a1a15]">{p.evento?.nombreEvento ?? '—'}</td>
+                <td className="py-3 text-[#a08078]">
                   {new Date(p.createdAt).toLocaleDateString()}
                 </td>
-                <td className="py-3 text-right font-semibold text-slate-900">
+                <td className="py-3 text-right font-semibold text-[#8B1010]">
                   ${p.monto.toLocaleString()}
                 </td>
                 <td className="py-3 text-right">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${estadoStyles[p.estado]}`}>
-                    {p.estado}
+                  <span className={`inline-block rounded-full px-2 py-1 text-[10px] font-semibold ${estadoStyles[p.estado]}`}>
+                    {estadoLabel[p.estado]}
                   </span>
                 </td>
               </tr>

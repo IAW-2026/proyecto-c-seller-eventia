@@ -9,7 +9,7 @@ export default function ModificarEventoButton({ onClick }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className="border border-black bg-white px-3 py-1 text-sm"
+      className="flex-1 rounded-full border border-[rgba(101,0,3,0.18)] bg-white px-4 py-3 text-sm font-semibold text-[var(--color-primary)] transition hover:bg-[rgba(101,0,3,0.04)]"
     >
       Modificar
     </button>

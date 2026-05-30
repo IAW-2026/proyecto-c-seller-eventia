@@ -1,26 +1,46 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useUploadThing } from '@/app/lib/uploadthing';
-import { Upload, X, Loader2 } from 'lucide-react';
+import { eliminarImagenAction } from '@/app/lib/actions/imagenes';
+import { Upload, X, Loader2, Star } from 'lucide-react';
 
-// El padre pasa onChange para recibir las URLs reales una vez que terminó la subida
-type Props = {
-  onChange: (urls: string[]) => void;
+type Item = {
+  display: string;
+  real: string | null;
 };
 
-export default function CargaImagenes({ onChange }: Props) {
-  // previews: URLs temporales locales para mostrar mientras se sube
-  const [previews, setPreviews] = useState<{ url: string; nombre: string }[]>([]);
-  // uploading: controla si mostrar spinner o ícono de upload
-  const [uploading, setUploading] = useState(false);
+type Props = {
+  onChange: (urls: string[]) => void;
+  initialUrls?: string[];
+};
 
-  // Conecta con el endpoint 'imagenesEvento' definido en core.ts
+export default function CargaImagenes({ onChange, initialUrls = [] }: Props) {
+  const [items, setItems] = useState<Item[]>(initialUrls.map((url) => ({ display: url, real: url })));
+  const [uploading, setUploading] = useState(false);
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    onChange(items.filter((i) => i.real !== null).map((i) => i.real!));
+  }, [items, onChange]);
+
   const { startUpload } = useUploadThing('imagenesEvento', {
-    // Cuando Uploadthing termina, extrae las URLs reales y se las pasa al formulario
     onClientUploadComplete: (res) => {
-      const urls = res.map((f) => f.ufsUrl);
-      onChange(urls);
+      const nuevasUrls = res.map((f) => f.ufsUrl);
+      setItems((prev) => {
+        const updated = [...prev];
+        let urlIdx = 0;
+        for (let i = 0; i < updated.length && urlIdx < nuevasUrls.length; i++) {
+          if (updated[i].real === null) {
+            updated[i] = { ...updated[i], real: nuevasUrls[urlIdx++] };
+          }
+        }
+        return updated;
+      });
       setUploading(false);
     },
     onUploadError: (err) => {
@@ -29,52 +49,56 @@ export default function CargaImagenes({ onChange }: Props) {
     },
   });
 
-  // Se ejecuta cuando el usuario elige archivos (click o drag & drop)
-  const procesarArchivos = useCallback(async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-    // Descarta archivos que no sean imágenes
-    const validas = Array.from(files).filter((f) => f.type.startsWith('image/'));
-    if (validas.length === 0) return;
+  const procesarArchivos = useCallback(
+    async (files: FileList | null) => {
+      if (!files || files.length === 0) return;
+      const validas = Array.from(files).filter((f) => f.type.startsWith('image/'));
+      if (validas.length === 0) return;
+      const nuevosItems = validas.map((f) => ({ display: URL.createObjectURL(f), real: null as string | null }));
+      setItems((prev) => [...prev, ...nuevosItems]);
+      setUploading(true);
+      await startUpload(validas);
+    },
+    [startUpload],
+  );
 
-    // Crea previews locales instantáneos para mostrar antes de que termine la subida
-    const nuevasPreviews = validas.map((f) => ({ url: URL.createObjectURL(f), nombre: f.name }));
-    setPreviews((prev) => [...prev, ...nuevasPreviews]);
+  const eliminar = async (idx: number) => {
+    const item = items[idx];
+    if (item.real) {
+      await eliminarImagenAction(item.real);
+    }
+    if (item.display.startsWith('blob:')) URL.revokeObjectURL(item.display);
+    setItems(items.filter((_, i) => i !== idx));
+  };
 
-    // Sube los archivos a Uploadthing
-    setUploading(true);
-    await startUpload(validas);
-  }, [startUpload]);
-
-  // Elimina una preview de la lista y libera la memoria del objeto URL temporal
-  const eliminar = (idx: number) => {
-    setPreviews((prev) => {
-      URL.revokeObjectURL(prev[idx].url);
-      return prev.filter((_, i) => i !== idx);
-    });
+  const setPortada = (idx: number) => {
+    if (idx === 0) return;
+    const updated = [...items];
+    const [item] = updated.splice(idx, 1);
+    updated.unshift(item);
+    setItems(updated);
   };
 
   return (
     <div className="space-y-4">
-      {/* Zona de drop: acepta click y drag & drop */}
       <div
-        className="border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all border-gray-200 bg-gray-50 hover:border-gray-400 hover:bg-gray-100"
+        className="flex cursor-pointer flex-col items-center justify-center rounded-[26px] border-2 border-dashed border-[#d9baa8] bg-[#fbf3e3] px-4 py-10 transition-colors hover:border-[#c99c88] hover:bg-[#fff8ed] sm:px-6 sm:py-12 lg:py-14"
         onClick={() => document.getElementById('ut-input')?.click()}
         onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => { e.preventDefault(); procesarArchivos(e.dataTransfer.files); }}
+        onDrop={(e) => {
+          e.preventDefault();
+          procesarArchivos(e.dataTransfer.files);
+        }}
       >
-        <div className="w-14 h-14 rounded-full bg-white shadow flex items-center justify-center mb-3">
-          {/* Spinner mientras sube, ícono de upload cuando está idle */}
-          {uploading
-            ? <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
-            : <Upload className="w-6 h-6 text-gray-400" />}
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#ff9aa0] text-[#7b0b0b] shadow-[0_10px_20px_rgba(255,154,160,0.22)] sm:mb-5 sm:h-16 sm:w-16">
+          {uploading ? <Loader2 className="h-6 w-6 animate-spin sm:h-7 sm:w-7" /> : <Upload className="h-6 w-6 sm:h-7 sm:w-7" />}
         </div>
-        <p className="font-semibold text-gray-700">
+        <p className="text-center text-[18px] font-black text-[#222222] sm:text-[20px] lg:text-[22px]">
           {uploading ? 'Subiendo...' : 'Cargar Imágenes del Evento'}
         </p>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="mt-2 max-w-[320px] text-center text-[13px] text-[#8a7067] sm:text-[14px] lg:text-[15px]">
           Arrastrá y soltá archivos aquí o hacé clic para explorar
         </p>
-        {/* Input oculto, se activa con el click del div de arriba */}
         <input
           id="ut-input"
           type="file"
@@ -85,25 +109,51 @@ export default function CargaImagenes({ onChange }: Props) {
         />
       </div>
 
-      {/* Grid de thumbnails de las imágenes cargadas */}
-      {previews.length > 0 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-          {previews.map((img, idx) => (
-            <div
-              key={idx}
-              className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group shadow-sm"
-            >
-              <img src={img.url} alt={img.nombre} className="w-full h-full object-cover" />
-              {/* Overlay con botón X al hacer hover */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); eliminar(idx); }}
-                  className="text-white hover:scale-125 transition-transform"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+      {items.length > 0 && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {items.map((item, idx) => (
+            <div key={idx} className="group relative aspect-square overflow-hidden rounded-[18px] border border-[#e6d3c2] shadow-sm">
+              <img src={item.display} alt={`Imagen ${idx + 1}`} className="h-full w-full object-cover" />
+
+              {idx === 0 && (
+                <div className="absolute left-2 top-2 rounded-full bg-[#f0d26f] px-2 py-1 text-[10px] font-bold text-[#6c5200]">
+                  Portada
+                </div>
+              )}
+
+              {item.real === null && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                  <Loader2 className="h-5 w-5 animate-spin text-white" />
+                </div>
+              )}
+
+              {item.real !== null && (
+                <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/35 opacity-0 transition-opacity group-hover:opacity-100">
+                  {idx !== 0 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPortada(idx);
+                      }}
+                      className="text-[#f5d76b] transition-transform hover:scale-125"
+                      title="Usar como portada"
+                    >
+                      <Star className="h-5 w-5" />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      eliminar(idx);
+                    }}
+                    className="text-white transition-transform hover:scale-125"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -52,7 +52,11 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
 
   revalidatePath('/vendedor/eventos');
   revalidatePath('/admin/eventos');
-  redirect('/vendedor/eventos');
+  if (admin) {
+    redirect('/admin/eventos');
+  } else {
+    redirect('/vendedor/eventos');
+  }
 }
 
 export async function deleteEventoAction(idEvento: number) {

@@ -4,28 +4,36 @@ type CategoriaStats = {
   porcentaje: number;
 };
 
-const COLORES = ['bg-blue-500', 'bg-violet-500', 'bg-emerald-500', 'bg-orange-400'];
+const COLORES = [
+  { fill: '#8B1010', text: '#8B1010' },
+  { fill: '#d4848a', text: '#d4848a' },
+  { fill: '#e8a898', text: '#e8a898' },
+  { fill: '#c0706a', text: '#c0706a' },
+];
 
 export default function SalesCategory({ categorias }: { categorias: CategoriaStats[] }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <h2 className="font-semibold text-slate-800 mb-1">Sales Category</h2>
-      <p className="text-xs text-slate-400 mb-5">Distribución de entradas vendidas</p>
+    <div className="rounded-xl border border-[#e8ddd5] bg-white p-5">
+      <h2 className="text-[13px] font-semibold text-[#1a0a0a]">Categorías</h2>
+      <p className="mb-4 text-[11px] text-[#a08078]">Distribución de entradas vendidas</p>
 
       {categorias.length === 0 ? (
-        <p className="text-sm text-slate-400 text-center py-8">Sin datos aún</p>
+        <p className="py-8 text-center text-sm text-[#a08078]">Sin datos aún</p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {categorias.map(({ categoria, porcentaje }, i) => (
             <div key={categoria}>
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-slate-700 font-medium">{categoria}</span>
-                <span className="text-slate-500">{porcentaje}%</span>
+              <div className="mb-1 flex justify-between text-[12px]">
+                <span className="font-medium text-[#5a3a35]">{categoria}</span>
+                <span style={{ color: COLORES[i % COLORES.length].text, fontWeight: 600 }}>{porcentaje}%</span>
               </div>
-              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-1.5 overflow-hidden rounded-full bg-[#f0e8e0]">
                 <div
-                  className={`h-full rounded-full ${COLORES[i % COLORES.length]}`}
-                  style={{ width: `${porcentaje}%` }}
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${porcentaje}%`,
+                    backgroundColor: COLORES[i % COLORES.length].fill,
+                  }}
                 />
               </div>
             </div>

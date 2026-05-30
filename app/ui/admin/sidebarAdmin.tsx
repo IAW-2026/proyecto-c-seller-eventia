@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, CalendarDays, FlaskConical, Plus } from 'lucide-react';
+import { BarChart3, CalendarDays, FlaskConical, Home, Users } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SidebarAdmin() {
@@ -10,17 +10,21 @@ export default function SidebarAdmin() {
   const [simOpen, setSimOpen] = useState(false);
 
   const linkClass = (href: string) =>
-    `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+    `mx-2 flex items-center gap-2.5 border-l-[3px] px-4 py-2 text-[13px] transition-colors ${
       pathname === href
-        ? 'bg-slate-100 text-slate-900'
-        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+        ? 'border-l-[#8B1010] bg-[#f5e8e4] font-medium text-[#8B1010]'
+        : 'border-l-transparent text-[#5a3a35] hover:bg-[#faf0ee]'
     }`;
 
   return (
-    <aside className="w-56 shrink-0 border-r border-slate-200 bg-white p-4 flex flex-col gap-1">
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide px-3 mb-2">
-        Admin
-      </p>
+    <aside className="flex h-[calc(100vh-4rem)] w-[200px] shrink-0 flex-col overflow-y-auto border-r border-[#e8ddd5] bg-[#fdf8f3] py-5">
+      <span className="px-4 pt-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#b0a09a]">
+        Panel de administrador
+      </span>
+
+      <Link href="/" className={linkClass('/')}>
+        <Home className="h-4 w-4" /> Inicio
+      </Link>
 
       <Link href="/admin/reportes" className={linkClass('/admin/reportes')}>
         <BarChart3 className="h-4 w-4" /> Reportes
@@ -30,18 +34,21 @@ export default function SidebarAdmin() {
         <CalendarDays className="h-4 w-4" /> Eventos
       </Link>
 
-      <Link href="/admin/eventos/nuevo" className={linkClass('/admin/eventos/nuevo')}>
-        <Plus className="h-4 w-4" /> Crear Evento
+      <Link href="/admin/organizadores" className={linkClass('/admin/organizadores')}>
+        <Users className="h-4 w-4" /> Organizadores
       </Link>
 
-      {/* Simulaciones con desplegable */}
+      <span className="px-4 pt-5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#b0a09a]">
+        Avanzado
+      </span>
+
       <button
         onClick={() => setSimOpen(!simOpen)}
-        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+        className="mx-2 flex items-center gap-2.5 border-l-[3px] border-l-transparent px-4 py-2 text-[13px] font-medium text-[#5a3a35] transition-colors hover:bg-[#faf0ee]"
       >
         <FlaskConical className="h-4 w-4" />
         Simulaciones
-        <span className="ml-auto text-xs">{simOpen ? '▲' : '▼'}</span>
+        <span className="ml-auto text-[10px]">{simOpen ? '▲' : '▼'}</span>
       </button>
 
       {simOpen && (

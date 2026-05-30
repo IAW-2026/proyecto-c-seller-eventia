@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/limpiezaPedidos",
-      "schedule": "40 13 * * *" 
+      "schedule": "0 23 * * *"
     }
   ]
 }

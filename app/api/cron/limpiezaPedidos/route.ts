@@ -3,7 +3,15 @@ import prisma from "../../../lib/prisma";
 export async function GET() {
   try {
     const result = await prisma.pedidos.deleteMany({
-      where: { estado: "CANCELADO" },
+      where: {
+        OR: [
+          { estado: "CANCELADO" },
+          {
+            estado: "PENDIENTE",
+            createdAt: { lt: new Date(Date.now() - 15 * 60 * 1000) },
+          },
+        ],
+      },
     });
 
     return new Response(
