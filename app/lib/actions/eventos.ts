@@ -22,7 +22,7 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
   if (data.stock === '' || data.stock === null || data.stock === undefined) return { error: "La capacidad es obligatoria" };
   if (data.precio === '' || data.precio === null || data.precio === undefined) return { error: "El precio es obligatorio" };
 
-  const payload = {
+  const camposEvento = {
     nombreEvento: data.nombreEvento,
     descripcion: data.descripcion,
     fecha: new Date(`${data.fecha}T${data.hora}:00-03:00`),
@@ -30,7 +30,6 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
     stock: Number(data.stock),
     precio: Number(data.precio),
     categoria: data.categoria,
-    idOrganizador: userId,
     imagenes,
   };
 
@@ -41,9 +40,10 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
       if (!existing) throw new Error("Evento no encontrado");
       if (!admin && existing.idOrganizador !== userId) throw new Error("No autorizado a editar este evento");
 
-      await prisma.eventos.update({ where: { idEvento }, data: payload });
+      // no se incluye idOrganizador para no sobreescribir al dueño original
+      await prisma.eventos.update({ where: { idEvento }, data: camposEvento });
     } else {
-      await prisma.eventos.create({ data: payload });
+      await prisma.eventos.create({ data: { ...camposEvento, idOrganizador: userId } });
     }
   } catch (error) {
     console.error("Error en Server Action:", error);
