@@ -1,6 +1,7 @@
 'use client';
 
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
+import { esAdmin } from '@/app/lib/rolesAdmin'; // función pura de chequeo de rol
 import Image from 'next/image';
 import Link from 'next/link';
 import { BarChart3, CalendarDays, Menu, X } from 'lucide-react';
@@ -20,7 +21,7 @@ export default function BarraInicio() {
   const { isSignedIn, user } = useUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isAdmin = isSignedIn && user?.publicMetadata?.role === 'adminSeller';
+  const isAdmin = isSignedIn && esAdmin((user?.publicMetadata ?? {}) as Record<string, unknown>);
   const mainLinkHref = isAdmin ? '/admin/reportes' : '/organizador/eventos';
   const mainLinkLabel = isAdmin ? 'Panel de administrador' : 'Mis Eventos';
   const mainLinkActive = isAdmin ? pathname.startsWith('/admin') : pathname.startsWith('/organizador');
