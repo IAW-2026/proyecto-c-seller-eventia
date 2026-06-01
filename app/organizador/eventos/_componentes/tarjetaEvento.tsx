@@ -26,7 +26,7 @@ type Props = {
   onEliminar: (idEvento: number) => void;
 };
 
-function CarouselImagenes({ imagenes }: { imagenes: string[] }) {
+function CarouselImagenes({ imagenes, nombreEvento }: { imagenes: string[], nombreEvento: string }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
   const [current, setCurrent] = useState(0);
 
@@ -50,7 +50,7 @@ function CarouselImagenes({ imagenes }: { imagenes: string[] }) {
       <div className="relative aspect-[16/9] overflow-hidden">
         {/* priority = preload en el navegador, mejora el LCP */}
         {/* sizes refleja el grid de galeriaEventos: 1 col mobile, 2 col sm, 3 col lg */}
-        <Image src={imagenes[0]} alt="Imagen del evento" fill className="object-cover object-center" priority sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+        <Image src={imagenes[0]} alt={`Fotografía de ${nombreEvento}`} fill className="object-cover object-center" priority quality={60} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
       </div>
     );
   }
@@ -64,7 +64,7 @@ function CarouselImagenes({ imagenes }: { imagenes: string[] }) {
             <div key={i} className="relative flex-none w-full h-full">
               {/* priority solo en la portada (i=0) para preload del LCP */}
               {/* sizes refleja el grid de galeriaEventos: 1 col mobile, 2 col sm, 3 col lg */}
-              <Image src={url} alt={`Imagen ${i + 1}`} fill className="object-cover object-center" priority={i === 0} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+              <Image src={url} alt={`Fotografía ${i + 1} de ${nombreEvento}`} fill className="object-cover object-center" priority={i === 0} quality={60} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
             </div>
           ))}
         </div>
@@ -108,7 +108,7 @@ function CarouselImagenes({ imagenes }: { imagenes: string[] }) {
 export default function TarjetaEvento({ evento, onModificar, onEliminar }: Props) {
   return (
     <div className="w-full max-w-none overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm sm:max-w-[21rem]">
-      <CarouselImagenes imagenes={evento.imagenes ?? []} />
+      <CarouselImagenes imagenes={evento.imagenes ?? []} nombreEvento={evento.nombreEvento} />
 
       <div className="p-3">
         <span
@@ -121,9 +121,9 @@ export default function TarjetaEvento({ evento, onModificar, onEliminar }: Props
           {evento.categoria}
         </span>
 
-        <h3 className={`mb-2 text-lg font-bold ${ptSerif.className}`} style={{ color: 'var(--color-primary)' }}>
+        <h2 className={`mb-2 text-lg font-bold ${ptSerif.className}`} style={{ color: 'var(--color-primary)' }}>
           {evento.nombreEvento}
-        </h3>
+        </h2>
 
         <p className="text-sm text-slate-600">
           {evento.descripcion}

@@ -27,9 +27,9 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-label mb-4 text-[11px] font-extrabold uppercase tracking-[0.14em]" style={{ color: 'var(--color-footer-accent)' }}>
+          <h2 className="font-label mb-4 text-[11px] font-extrabold uppercase tracking-[0.14em]" style={{ color: 'var(--color-footer-accent)' }}>
             Plataforma
-          </h4>
+          </h2>
           <div className="flex flex-col">
             {links.map(({ label, href }) => (
               <Link

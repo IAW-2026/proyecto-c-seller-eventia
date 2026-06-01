@@ -119,7 +119,7 @@ export default function CargaImagenes({ onChange, initialUrls = [] }: Props) {
             <div key={item.id} className="group relative aspect-square overflow-hidden rounded-[18px] border border-[#e6d3c2] shadow-sm">
               {item.real
                 ? <Image src={item.real} alt={`Imagen ${idx + 1}`} fill className="object-cover" sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 16vw" />
-                : <img src={item.display} alt={`Imagen ${idx + 1}`} className="h-full w-full object-cover" />
+                : <img src={item.display} alt={`Imagen ${idx + 1}`} loading="lazy" className="h-full w-full object-cover" />
               }
 
               {idx === 0 && (

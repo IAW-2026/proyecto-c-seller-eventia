@@ -54,6 +54,7 @@ export default function FiltrosEventos({ organizadores }: Props) {
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               placeholder="Buscar por nombre..."
+              aria-label="Buscar eventos por nombre"
               className="h-9 sm:h-11 w-full rounded-full sm:rounded-[14px] border border-[#d7cfc6] bg-[#fcf4e5] px-3 sm:pl-11 pr-[90px] sm:pr-[100px] text-sm text-[#5d4d45] placeholder:text-[#9e8a80] outline-none transition focus:border-[#c9b8aa]"
             />
             <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -78,18 +79,20 @@ export default function FiltrosEventos({ organizadores }: Props) {
 
         {/* Filtro de fechas, alineado debajo del buscador */}
         <div className="ml-7 sm:ml-0 flex items-center gap-1.5">
-          <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-[#9a8b80]">Fecha</span>
+          <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-[#6e5549]">Fecha</span>
           <input
             type="date"
             value={fechaDesde}
             onChange={(e) => { setFechaDesde(e.target.value); actualizarURL({ fechaDesde: e.target.value }); }}
+            aria-label="Fecha desde"
             className="h-6 px-1.5 text-[10px] sm:h-8 sm:px-2.5 sm:text-xs rounded-full border border-[#d7cfc6] bg-[#fcf4e5] text-[#5d4d45] outline-none transition focus:border-[#c9b8aa] focus:bg-white"
           />
-          <span className="text-[9px] sm:text-[10px] text-[#9a8b80]">→</span>
+          <span className="text-[9px] sm:text-[10px] text-[#6e5549]">→</span>
           <input
             type="date"
             value={fechaHasta}
             onChange={(e) => { setFechaHasta(e.target.value); actualizarURL({ fechaHasta: e.target.value }); }}
+            aria-label="Fecha hasta"
             className="h-6 px-1.5 text-[10px] sm:h-8 sm:px-2.5 sm:text-xs rounded-full border border-[#d7cfc6] bg-[#fcf4e5] text-[#5d4d45] outline-none transition focus:border-[#c9b8aa] focus:bg-white"
           />
           {(fechaDesde || fechaHasta) && (
@@ -110,6 +113,7 @@ export default function FiltrosEventos({ organizadores }: Props) {
         <select
           defaultValue={searchParams.get('categoria') ?? ''}
           onChange={(e) => actualizarURL({ categoria: e.target.value })}
+          aria-label="Filtrar por categoría"
           className="mobile-compact-select h-9 sm:h-11 w-3/4 sm:w-auto ml-7 sm:ml-0 max-w-[360px] rounded-full sm:rounded-[14px] border border-[#d7cfc6] bg-[#fcf4e5] px-3 sm:px-4 py-1 text-sm text-[#5d4d45] outline-none transition focus:border-[#c9b8aa] focus:bg-white"
         >
           <option value="">Todas las categorías</option>
@@ -123,6 +127,7 @@ export default function FiltrosEventos({ organizadores }: Props) {
           <select
             defaultValue={searchParams.get('organizador') ?? ''}
             onChange={(e) => actualizarURL({ organizador: e.target.value })}
+            aria-label="Filtrar por organizador"
             className="mobile-compact-select h-9 sm:h-11 w-3/4 sm:w-auto ml-7 sm:ml-0 max-w-[360px] rounded-full sm:rounded-[14px] border border-[#d7cfc6] bg-[#fcf4e5] px-3 sm:px-4 py-1 text-sm text-[#5d4d45] outline-none transition focus:border-[#c9b8aa] focus:bg-white"
           >
             <option value="">Todos los organizadores</option>

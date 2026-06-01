@@ -14,6 +14,7 @@ export const viewport: Viewport = {
 
 // Metadata base — las páginas sobreescriben title via template '%s | Eventia'
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
   title: {
     template: '%s | Eventia',
     default: 'Eventia - Plataforma de eventos',

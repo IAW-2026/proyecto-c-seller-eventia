@@ -1,12 +1,18 @@
 'use client';
 
-import { UserButton } from '@clerk/nextjs';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import BotonVolver from '@/app/_componentes/botonVolver';
 import Footer from '@/app/_componentes/footer';
-import { useState, Suspense } from 'react';
+import { useState } from 'react';
+
+// ssr: false evita el hydration mismatch — Clerk renderiza el UserButton solo en el cliente
+const UserButton = dynamic(
+  () => import('@clerk/nextjs').then((mod) => mod.UserButton),
+  { ssr: false }
+);
 
 type PlantillaAuthProps = {
   children: React.ReactNode;
@@ -45,9 +51,7 @@ export default function PlantillaAuth({ children, sidebar }: PlantillaAuthProps)
             <Image src="/logo.png" alt="Eventia logo" width={36} height={36} className="rounded-full" />
           </Link>
 
-          <Suspense>
-            <UserButton />
-          </Suspense>
+          <UserButton />
         </div>
       </header>
 

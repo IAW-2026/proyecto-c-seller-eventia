@@ -110,9 +110,9 @@ function HeroSection({ createEventHref }: { createEventHref: string }) {
 
             {/* Cuerpo de la card */}
             <div className="p-5">
-              <h3 className="font-display mb-3 text-[22px] leading-[1.05]" style={{ color: 'var(--color-ink)' }}>
+              <p className="font-display mb-3 text-[22px] leading-[1.05]" style={{ color: 'var(--color-ink)' }}>
                 Festival de Jazz
-              </h3>
+              </p>
 
               <div className="mb-4 flex flex-col gap-[7px]">
                 <div className="font-body flex items-center gap-2 text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
