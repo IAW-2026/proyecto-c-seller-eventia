@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { getDashboardData } from '@/app/lib/dashboard';
 import PantallaReportes from '@/app/_componentes/dashboard/pantallaReportes';
 
-export const metadata: Metadata = { title: 'Reportes — Eventia' };
+export const metadata: Metadata = { title: 'Reportes' };
 
 export default async function DashboardPage() {
   const user = await currentUser();

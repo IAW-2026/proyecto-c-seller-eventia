@@ -85,7 +85,6 @@ export async function getDashboardData(
     prisma.pedidos.findMany({
       where: pedidosWhere,
       orderBy: { createdAt: 'desc' },
-      take: 4,
       select: {
         idPedido: true,
         monto: true,

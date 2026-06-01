@@ -21,8 +21,8 @@ const estadoLabel = {
 export default function PedidosRecientes({ pedidos }: { pedidos: Pedido[] }) {
   return (
     <div className="rounded-xl border border-[#e8ddd5] bg-white p-5">
-      <h2 className="text-[13px] font-semibold text-[#1a0a0a]">Pedidos recientes</h2>
-      <p className="mb-4 text-[11px] text-[#a08078]">Últimas transacciones de tus eventos</p>
+      <h2 className="text-[13px] font-semibold text-[#1a0a0a]">Todos los pedidos</h2>
+      <p className="mb-4 text-[11px] text-[#a08078]">Transacciones de tus eventos según el alcance del reporte</p>
 
       {pedidos.length === 0 ? (
         <p className="py-8 text-center text-sm text-[#a08078]">Sin pedidos aún</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import BuscadorOpcion from "../_componentes/buscadorOpcion";
 
 type Evento = {
   idEvento: number;
@@ -104,21 +105,16 @@ export default function PaymentsSimulacion() {
           </span>
         </div>
 
-        {/* Acción 1 y 3 comparten el mismo select de evento */}
+        {/* Acción 1 y 3 comparten el mismo selector visible de evento */}
         <div className="rounded-[20px] border border-[#eadfd2] bg-[#f9f4ed] p-5 flex flex-col gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#b38c7d]">Acciones 1 y 3 — por evento</p>
-          <input
-            list="pay-eventos-list"
-            placeholder="Seleccioná o escribí un ID de evento"
+          <BuscadorOpcion
             value={idEvento}
-            onChange={(e) => setIdEvento(e.target.value)}
-            className={selectClass}
+            onChange={setIdEvento}
+            opciones={eventos.map((e) => ({ id: e.idEvento, label: e.nombreEvento }))}
+            placeholder="Buscá o escribí un ID de evento"
+            emptyLabel="No hay eventos para mostrar"
           />
-          <datalist id="pay-eventos-list">
-            {eventos.map((e) => (
-              <option key={e.idEvento} value={String(e.idEvento)}>{e.nombreEvento}</option>
-            ))}
-          </datalist>
           <div className="flex flex-col gap-2 sm:flex-row">
             {/* Acción 1: pedir detalle del evento seleccionado */}
             <button onClick={pedirDetalleEvento} disabled={!idEvento} className={`${btnSecondary} w-full sm:w-auto`}>
@@ -135,20 +131,16 @@ export default function PaymentsSimulacion() {
         <div className="rounded-[20px] border border-[#eadfd2] bg-[#f9f4ed] p-5 flex flex-col gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#b38c7d]">Acción 2 — estado de transacción</p>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <input
-              list="pay-pedidos-list"
-              placeholder="Seleccioná o escribí un ID de pedido"
+            <BuscadorOpcion
               value={idPedido}
-              onChange={(e) => setIdPedido(e.target.value)}
-              className={selectClass}
+              onChange={setIdPedido}
+              opciones={pedidos.map((p) => ({
+                id: p.idPedido,
+                label: `${p.estado} — $${p.monto}`,
+              }))}
+              placeholder="Buscá o escribí un ID de pedido"
+              emptyLabel="No hay pedidos para mostrar"
             />
-            <datalist id="pay-pedidos-list">
-              {pedidos.map((p) => (
-                <option key={p.idPedido} value={String(p.idPedido)}>
-                  #{p.idPedido} — {p.estado} — ${p.monto}
-                </option>
-              ))}
-            </datalist>
             <select
               value={estadoTransaccion}
               onChange={(e) => setEstadoTransaccion(e.target.value)}

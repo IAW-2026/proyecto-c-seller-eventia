@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from 'next';
 import prisma from '@/app/lib/prisma';
 
-export const metadata: Metadata = { title: 'Eventos — Eventia' };
+export const metadata: Metadata = { title: 'Eventos' };
 import FiltrosEventos from '@/app/_componentes/filtrosEventos';
 import TablaEventosAdmin from '@/app/admin/eventos/_componentes/tablaEventos';
 import Paginacion from '@/app/_componentes/paginacion';

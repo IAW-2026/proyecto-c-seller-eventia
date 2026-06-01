@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import BuscadorOpcion from "../_componentes/buscadorOpcion";
 
 type Evento = {
   idEvento: number;
@@ -58,22 +59,14 @@ export default function BuyerSimulacion() {
     setLoading(false);
   }
 
-  // Input con datalist — muestra los eventos como sugerencias pero permite tipear cualquier ID
   const selectEvento = (
-    <div className="flex-1">
-      <input
-        list="buyer-eventos-list"
-        placeholder="Seleccioná o escribí un ID de evento"
-        value={idEvento}
-        onChange={(e) => setIdEvento(e.target.value)}
-        className={`${selectClass} w-full`}
-      />
-      <datalist id="buyer-eventos-list">
-        {eventos.map((e) => (
-          <option key={e.idEvento} value={String(e.idEvento)}>{e.nombreEvento}</option>
-        ))}
-      </datalist>
-    </div>
+    <BuscadorOpcion
+      value={idEvento}
+      onChange={setIdEvento}
+      opciones={eventos.map((e) => ({ id: e.idEvento, label: e.nombreEvento }))}
+      placeholder="Buscá o escribí un ID de evento"
+      emptyLabel="No hay eventos para mostrar"
+    />
   );
 
   return (
