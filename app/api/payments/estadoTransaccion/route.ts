@@ -16,12 +16,6 @@ export async function POST(request: Request) {
       }
     );
 
-    // si el seller devuelve 204 significa que el pedido ya fue procesado — devolvemos 200 con JSON
-    // porque HTTP 204 no permite body y el cliente no podría leer el mensaje
-    if (response.status === 204) {
-      return NextResponse.json({ mensaje: "El pedido ya fue procesado anteriormente" });
-    }
-
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
