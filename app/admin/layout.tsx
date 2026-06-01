@@ -1,12 +1,14 @@
 import { isAdmin } from '@/app/lib/admin';
-import { redirect } from 'next/navigation';
-import AuthShell from '@/app/ui/authShell';
-import SidebarAdmin from '@/app/ui/admin/sidebarAdmin';
+import { forbidden } from 'next/navigation';
+import { getOrCreateOrganizador } from '@/app/lib/actions/organizadores';
+import PlantillaAuth from '@/app/_componentes/plantillaAuth';
+import SidebarVendedor from '@/app/organizador/_componentes/sidebarVendedor';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  if (!(await isAdmin())) redirect('/');
+  if (!(await isAdmin())) forbidden();
+  await getOrCreateOrganizador();
 
   return (
-    <AuthShell sidebar={<SidebarAdmin />}>{children}</AuthShell>
+    <PlantillaAuth sidebar={<SidebarVendedor esAdmin />}>{children}</PlantillaAuth>
   );
 }

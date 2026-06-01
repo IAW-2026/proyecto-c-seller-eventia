@@ -1,5 +1,6 @@
 import prisma from "../../../lib/prisma";
 import { NextResponse } from "next/server";
+import { limpiarPedidosExpirados } from "../../../lib/actions/pedidos";
 
 const BUYER_URL = process.env.BUYER_BASE_URL;
 
@@ -25,34 +26,14 @@ export async function POST(request: Request) {
     const idsCancelados: number[] = [];
 
     const pedido = await prisma.$transaction(async (tx) => {
-      // 1. LIMPIEZA BAJO DEMANDA: Liberar stock de pedidos PENDIENTE de más de 15 min
-      // Esto evita que el stock quede bloqueado si el usuario abandona la compra.
-      const expiracion = new Date(Date.now() - 5 * 60 * 1000);
+      // 1. LIMPIEZA BAJO DEMANDA: liberar stock de pedidos vencidos para este evento
+      const cancelados = await limpiarPedidosExpirados(tx, idEvento);
+      idsCancelados.push(...cancelados);
 
-      const pedidosExpirados = await tx.pedidos.findMany({
-        where: {
-          idEvento,
-          estado: "PENDIENTE",
-          createdAt: { lt: expiracion },
-        },
-      });
-
-      for (const p of pedidosExpirados) {
-        await tx.eventos.update({
-          where: { idEvento },
-          data: { stock: { increment: p.cantEntradas ?? 0 } },
-        });
-        await tx.pedidos.update({
-          where: { idPedido: p.idPedido },
-          data: { estado: "CANCELADO" },
-        });
-        idsCancelados.push(p.idPedido);
-      }
-      // le mando a buyer
       if (idsCancelados.length > 0) {
         fetch(`${BUYER_URL}/api/buyer/pedidoCancelado`, {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-api-key": process.env.BUYER_API_KEY as string },
+          headers: { "Content-Type": "application/json", "x-api-key": process.env.BUYER_API_KEY ?? '' },
           body: JSON.stringify({ idsPedidos: idsCancelados }),
         }).catch((err) => console.error("Error notificando buyer pedidos cancelados:", err));
       }
@@ -123,8 +104,7 @@ export async function POST(request: Request) {
     }
 
     console.error(err);
-    const detalle = err instanceof Error ? err.message : String(err);
-    return new Response(JSON.stringify({ error: "Error del servidor", detalle }), {
+    return new Response(JSON.stringify({ error: "Error del servidor" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

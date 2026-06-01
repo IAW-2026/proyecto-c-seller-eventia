@@ -50,8 +50,8 @@ export async function POST(request: Request) {
     if (estadoTransaccion === "CANCELADA" || estadoTransaccion === "FALLIDA") {
       await prisma.$transaction(async (tx) => {
         await tx.eventos.update({
-          where: { idEvento: pedido.idEvento as number },
-          data: { stock: { increment: pedido.cantEntradas as number } },
+          where: { idEvento: pedido.idEvento },
+          data: { stock: { increment: pedido.cantEntradas } },
         });
 
         await tx.pedidos.update({
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
 
       fetch(`${BUYER_URL}/api/buyer/pedidoCancelado`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-api-key": process.env.BUYER_API_KEY as string },
+        headers: { "Content-Type": "application/json", "x-api-key": process.env.BUYER_API_KEY ?? '' },
         body: JSON.stringify({ idsPedidos: [idPedido] }),
       }).catch((err) => console.error("Error notificando buyer pedido cancelado:", err));
 

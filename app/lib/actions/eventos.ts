@@ -3,32 +3,32 @@
 import prisma from "@/app/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { isAdmin } from "@/app/lib/admin";
-import { type FormValues } from "@/app/ui/formularioEvento";
+import { type FormValues } from "@/app/_componentes/formularioEvento";
+import { TZ_OFFSET } from "@/app/lib/constants";
 
 export async function upsertEventoAction(idEvento: number | null, data: FormValues, imagenes: string[] = []) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("No autorizado");
-
-  const admin = await isAdmin();
+  const user = await currentUser();
+  if (!user) throw new Error("No autorizado");
+  const userId = user.id;
+  const admin = await isAdmin(user);
 
   if (!data.nombreEvento?.trim()) return { error: "El nombre del evento es obligatorio" };
-  if (!data.descripcion?.trim()) return { error: "La descripción es obligatoria" };
   if (!data.fecha) return { error: "La fecha es obligatoria" };
   if (!data.hora) return { error: "La hora es obligatoria" };
   if (!data.direccion?.trim()) return { error: "La dirección es obligatoria" };
   if (!data.ciudad?.trim()) return { error: "La ciudad es obligatoria" };
-  if (data.stock === '' || data.stock === null || data.stock === undefined) return { error: "La capacidad es obligatoria" };
-  if (data.precio === '' || data.precio === null || data.precio === undefined) return { error: "El precio es obligatorio" };
+  if (data.stock === null || data.stock === undefined || isNaN(data.stock)) return { error: "La capacidad es obligatoria" };
+  if (data.precio === null || data.precio === undefined || isNaN(data.precio)) return { error: "El precio es obligatorio" };
 
   const camposEvento = {
     nombreEvento: data.nombreEvento,
     descripcion: data.descripcion,
-    fecha: new Date(`${data.fecha}T${data.hora}:00-03:00`),
+    fecha: new Date(`${data.fecha}T${data.hora}:00${TZ_OFFSET}`),
     ubicacion: `${data.direccion}, ${data.ciudad}`,
-    stock: Number(data.stock),
-    precio: Number(data.precio),
+    stock: data.stock,
+    precio: data.precio,
     categoria: data.categoria,
     imagenes,
   };
@@ -50,28 +50,28 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
     return { error: "No se pudo guardar el evento" };
   }
 
-  revalidatePath('/vendedor/eventos');
+  revalidatePath('/organizador/eventos');
   revalidatePath('/admin/eventos');
-  if (admin) {
-    redirect('/admin/eventos');
-  } else {
-    redirect('/vendedor/eventos');
-  }
+  redirect('/organizador/eventos');
 }
 
 export async function deleteEventoAction(idEvento: number) {
   try {
-    const { userId } = await auth();
-    if (!userId) return { error: "No autorizado" };
+    const user = await currentUser();
+    if (!user) return { error: "No autorizado" };
+    const userId = user.id;
 
-    const admin = await isAdmin();
+    const admin = await isAdmin(user);
 
     const existing = await prisma.eventos.findUnique({ where: { idEvento } });
     if (!existing) return { error: "Evento no encontrado" };
     if (!admin && existing.idOrganizador !== userId) return { error: "No autorizado a eliminar este evento" };
 
+    const pedidosCount = await prisma.pedidos.count({ where: { idEvento } });
+    if (pedidosCount > 0) return { error: "No se puede eliminar un evento que tiene pedidos asociados" };
+
     await prisma.eventos.delete({ where: { idEvento } });
-    revalidatePath('/vendedor/eventos');
+    revalidatePath('/organizador/eventos');
     revalidatePath('/admin/eventos');
     return { success: true };
   } catch (error) {

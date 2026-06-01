@@ -53,21 +53,35 @@ export async function getDashboardData(
   ] = await Promise.all([
     prisma.eventos.count({ where: eventosWhere }),
     prisma.pedidos.aggregate({
-      where: pedidosWhere,
+      where: { ...pedidosWhere, estado: 'PAGADO' },
       _sum: { cantEntradas: true, monto: true },
     }),
     prisma.pedidos.count({ where: { ...pedidosWhere, estado: 'PENDIENTE' } }),
     prisma.pedidos.groupBy({
       by: ['idEvento'],
-      where: { ...pedidosWhere, idEvento: { not: null } },
+      where: { ...pedidosWhere, estado: 'PAGADO' },
       _sum: { cantEntradas: true, monto: true },
       orderBy: { _sum: { monto: 'desc' } },
       take: 3,
     }),
-    prisma.pedidos.findMany({
-      where: pedidosWhere,
-      select: { cantEntradas: true, evento: { select: { categoria: true } } },
-    }),
+    pedidosWhere.idOrganizador
+      ? prisma.$queryRaw<{ categoria: string | null; tickets: bigint }[]>`
+          SELECT e.categoria, COALESCE(SUM(p."cantEntradas"), 0) AS tickets
+          FROM "pedidos" p
+          JOIN "eventos" e ON p."idEvento" = e."idEvento"
+          WHERE p."idOrganizador" = ${pedidosWhere.idOrganizador}
+            AND p.estado = 'PAGADO'
+          GROUP BY e.categoria
+          ORDER BY tickets DESC
+          LIMIT 4`
+      : prisma.$queryRaw<{ categoria: string | null; tickets: bigint }[]>`
+          SELECT e.categoria, COALESCE(SUM(p."cantEntradas"), 0) AS tickets
+          FROM "pedidos" p
+          JOIN "eventos" e ON p."idEvento" = e."idEvento"
+          WHERE p.estado = 'PAGADO'
+          GROUP BY e.categoria
+          ORDER BY tickets DESC
+          LIMIT 4`,
     prisma.pedidos.findMany({
       where: pedidosWhere,
       orderBy: { createdAt: 'desc' },
@@ -94,26 +108,18 @@ export async function getDashboardData(
       idEvento: p.idEvento!,
       nombreEvento: info?.nombreEvento ?? '',
       categoria: info?.categoria ?? '',
-      monto: Number(p._sum.monto ?? 0),
-      entradas: Number(p._sum.cantEntradas ?? 0),
+      monto: Number(p._sum?.monto ?? 0),
+      entradas: Number(p._sum?.cantEntradas ?? 0),
     };
   });
 
-  // Agrupar entradas por categoría y calcular porcentajes
-  const categoriaMap = new Map<string, number>();
-  for (const p of pedidosConCategoria) {
-    const cat = p.evento?.categoria ?? 'Otro';
-    categoriaMap.set(cat, (categoriaMap.get(cat) ?? 0) + (p.cantEntradas ?? 0));
-  }
-  const totalTickets = [...categoriaMap.values()].reduce((a, b) => a + b, 0);
-  const categoriaStats = [...categoriaMap.entries()]
-    .map(([categoria, tickets]) => ({
-      categoria,
-      tickets,
-      porcentaje: totalTickets > 0 ? Math.round((tickets / totalTickets) * 100) : 0,
-    }))
-    .sort((a, b) => b.tickets - a.tickets)
-    .slice(0, 4);
+  // Calcular porcentajes sobre el resultado ya agrupado por la DB
+  const totalTickets = pedidosConCategoria.reduce((a, b) => a + Number(b.tickets), 0);
+  const categoriaStats = pedidosConCategoria.map(({ categoria, tickets }) => ({
+    categoria: categoria ?? 'Otro',
+    tickets: Number(tickets),
+    porcentaje: totalTickets > 0 ? Math.round((Number(tickets) / totalTickets) * 100) : 0,
+  }));
 
   return {
     metrics: {

@@ -8,7 +8,8 @@
 :root {
   --color-primary: #650003;
   --color-primary-foreground: #fff9ea;
-  --color-primary-muted: #793338;
+  --color-primary-muted: #9a444a;
+  --color-primary-vivid: #8B1010;
   --color-accent: #fe9ea2;
   --color-accent-foreground: #793338;
   --color-text-muted: #59413e;

@@ -1,22 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Plus, Rocket, BarChart2, QrCode, ArrowRight, Share2, Globe, MapPin, Ticket, CalendarDays } from 'lucide-react';
-import RetroPattern from '@/app/ui/retroPattern';
-import BarraInicio from './ui/barraInicio';
-import { isAdmin } from '@/app/lib/admin';
+import { Plus, Rocket, BarChart2, QrCode, ArrowRight, MapPin, Ticket, CalendarDays } from 'lucide-react';
+import RetroPattern from '@/app/_componentes/retroPattern';
+import BarraInicio from './_componentes/barraInicio';
+import Footer from '@/app/_componentes/footer';
 
 export const metadata: Metadata = {
   title: 'Eventia - Descubrí y creá eventos',
   description: 'La plataforma para organizar eventos y vender entradas de manera fácil y segura.',
 };
 
-export default async function HomePage() {
-  const admin = await isAdmin();
-
-  const createEventHref = admin ? '/admin/eventos/nuevo' : '/vendedor/eventos/nuevo';
-  const primaryActionHref = admin ? '/admin/reportes' : '/vendedor/eventos';
-  const footerSectionHref = admin ? '/admin/eventos' : '/vendedor/eventos';
-  const footerSectionLabel = admin ? 'Eventos' : 'Mis Eventos';
+export default function HomePage() {
+  const createEventHref = '/organizador/eventos/nuevo';
+  const primaryActionHref = '/organizador/eventos';
 
   return (
     // Fondo: dos radiales suaves + crema base, igual al mockup
@@ -34,7 +30,7 @@ export default async function HomePage() {
       <HeroSection createEventHref={createEventHref} />
       <FeaturesSection />
       <CTABand primaryActionHref={primaryActionHref} />
-      <Footer footerSectionHref={footerSectionHref} footerSectionLabel={footerSectionLabel} />
+      <Footer />
     </div>
   );
 }
@@ -138,13 +134,14 @@ function HeroSection({ createEventHref }: { createEventHref: string }) {
                   <span className="font-label block text-[10px] opacity-60" style={{ color: 'var(--color-text-muted)' }}>desde</span>
                   <span className="font-display text-[22px] leading-none" style={{ color: 'var(--color-primary)' }}>$4.500</span>
                 </div>
-                <button
-                  className="font-label flex items-center gap-[6px] rounded-[11px] px-4 py-2 text-[13px] font-bold text-white transition hover:brightness-95"
+                <div
+                  className="font-label flex items-center gap-[6px] rounded-[11px] px-4 py-2 text-[13px] font-bold text-white"
                   style={{ background: 'var(--color-primary)' }}
+                  aria-hidden="true"
                 >
                   <Ticket size={14} />
                   Comprar
-                </button>
+                </div>
               </div>
             </div>
           </div>
@@ -326,54 +323,3 @@ function CTABand({ primaryActionHref }: { primaryActionHref: string }) {
   );
 }
 
-/* ─── FOOTER ─────────────────────────────────────────────────────────────────── */
-
-function Footer({ footerSectionHref, footerSectionLabel }: { footerSectionHref: string; footerSectionLabel: string }) {
-  return (
-    <footer className="px-8 pb-[30px] pt-[54px] sm:px-14" style={{ background: 'var(--color-primary)', color: 'var(--color-primary-foreground)' }}>
-      <div
-        className="grid grid-cols-1 gap-[40px] pb-[34px] lg:grid-cols-[1.4fr_1fr_1fr_auto]"
-        style={{ borderBottom: '1px solid var(--color-footer-border)', alignItems: 'start' }}
-      >
-        <div>
-          <div className="mb-4 flex items-center gap-3">
-            <span className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-full" style={{ background: 'var(--color-accent)' }}>
-              <span className="font-display text-[22px] leading-none" style={{ color: 'var(--color-primary)' }}>E</span>
-            </span>
-            <span className="font-display text-[22px] tracking-[0.01em]" style={{ color: 'var(--color-primary-foreground)' }}>
-              Eventia
-            </span>
-          </div>
-          <p className="font-body max-w-[300px] text-[14.5px] leading-[1.6]" style={{ color: 'var(--color-footer-muted)' }}>
-            Elevando la experiencia de tus eventos con un diseño audaz y funcional.
-          </p>
-        </div>
-
-        <div>
-          <h4 className="font-label mb-4 text-[11px] font-extrabold uppercase tracking-[0.14em]" style={{ color: 'var(--color-footer-accent)' }}>
-            Plataforma
-          </h4>
-          <div className="flex flex-col">
-            {[
-              { label: 'Inicio', href: '/' },
-              { label: footerSectionLabel, href: footerSectionHref },
-            ].map(({ label, href }) => (
-              <Link
-                key={label}
-                href={href}
-                className="font-body py-[6px] text-[14.5px] no-underline transition hover:translate-x-0.5"
-                style={{ color: 'var(--color-footer-link)' }}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <p className="font-label pt-[22px] text-[13px]" style={{ color: 'rgba(255, 249, 234, 0.6)' }}>
-        © 2026 Eventia. Todos los derechos reservados.
-      </p>
-    </footer>
-  );
-}

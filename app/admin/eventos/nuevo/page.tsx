@@ -1,4 +1,4 @@
-import FormularioEventoVendedor from '@/app/ui/formularioEventoVendedor';
+import FormularioEventoVendedor from '@/app/_componentes/formularioEventoVendedor';
 import prisma from '@/app/lib/prisma';
 
 export default async function NuevoEventoAdminPage({

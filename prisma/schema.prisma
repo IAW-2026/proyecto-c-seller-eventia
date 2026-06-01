@@ -41,8 +41,8 @@ model pedidos {
   idPedido      Int     @id @default(autoincrement())
   idOrganizador String?
   idUsuario     String?
-  idEvento      Int?
-  cantEntradas  Int?
+  idEvento      Int
+  cantEntradas  Int
   monto         Float   @db.Real
   estado        EstadoPedido
   createdAt     DateTime     @default(now())

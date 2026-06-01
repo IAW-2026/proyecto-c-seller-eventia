@@ -1,12 +1,16 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import '@/app/globals.css';
-import type { Metadata } from 'next';
-import { ffBody, ffDisplay, ffLabel } from '@/app/ui/fonts';
+import type { Metadata, Viewport } from 'next';
+import { ffBody, ffDisplay, ffLabel } from '@/app/_componentes/fonts';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
+
+export const viewport: Viewport = {
+  themeColor: '#fcf4e5',
+};
 
 // Metadata base — las páginas sobreescriben title via template '%s | Eventia'
 export const metadata: Metadata = {
@@ -15,6 +19,13 @@ export const metadata: Metadata = {
     default: 'Eventia - Plataforma de eventos',
   },
   description: 'La plataforma para organizadores de eventos. Creá tu evento, vendé entradas y gestioná todo desde un solo lugar.',
+  openGraph: {
+    title: 'Eventia - Plataforma de eventos',
+    description: 'La plataforma para organizadores de eventos. Creá tu evento, vendé entradas y gestioná todo desde un solo lugar.',
+    type: 'website',
+    siteName: 'Eventia',
+    locale: 'es_AR',
+  },
 };
 
 export default async function RootLayout({

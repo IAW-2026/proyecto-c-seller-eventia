@@ -1,7 +1,10 @@
+﻿import type { Metadata } from 'next';
 import prisma from '@/app/lib/prisma';
-import TablaOrganizadores from '@/app/ui/admin/tablaOrganizadores';
-import BuscadorOrganizadores from '@/app/ui/admin/buscadorOrganizadores';
-import Paginacion from '@/app/ui/paginacion';
+
+export const metadata: Metadata = { title: 'Organizadores â€” Eventia' };
+import TablaOrganizadores from '@/app/admin/organizadores/_componentes/tablaOrganizadores';
+import BuscadorOrganizadores from '@/app/admin/organizadores/_componentes/buscadorOrganizadores';
+import Paginacion from '@/app/_componentes/paginacion';
 import { Suspense } from 'react';
 
 const POR_PAGINA = 10;
@@ -40,11 +43,11 @@ export default async function AdminOrganizadoresPage({
   return (
     <div className="space-y-6 bg-[#fcf4e5] px-3 py-5 sm:px-5 lg:px-8">
       <div className="mb-4 pt-1 sm:mb-5">
-        <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#111111] sm:text-[38px]">
+        <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#8b1010] sm:text-[38px]">
           Organizadores
         </h1>
-        <p className="font-label ml-1 mt-1 w-fit text-[12px] leading-[1.4] text-[#6e5549]">
-          Gestioná los vendedores de la plataforma
+        <p className="font-label ml-1 mt-1 w-fit text-[12px] leading-[1.4] text-[#9a444a]">
+          GestionÃ¡ los organizadores de la plataforma
         </p>
       </div>
 
@@ -55,12 +58,12 @@ export default async function AdminOrganizadoresPage({
       {search && (
         <p className="text-sm text-slate-500">
           {total === 0
-            ? 'Sin resultados para la búsqueda'
+            ? 'Sin resultados para la bÃºsqueda'
             : `${total} resultado${total !== 1 ? 's' : ''} encontrados`}
         </p>
       )}
 
-      <div className="rounded-[20px] border border-[#eadfd2] bg-[#f9f4ed] shadow-[0_1px_0_rgba(0,0,0,0.02)]">
+      <div className="border border-[#eadfd2] bg-[#fdf9f2] shadow-[0_1px_0_rgba(0,0,0,0.02)]">
         <div className="overflow-x-auto sm:overflow-x-visible px-3 no-scrollbar">
           <TablaOrganizadores organizadores={organizadores} />
         </div>
@@ -77,3 +80,4 @@ export default async function AdminOrganizadoresPage({
     </div>
   );
 }
+

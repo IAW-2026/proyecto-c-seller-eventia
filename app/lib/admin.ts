@@ -1,7 +1,7 @@
-import { currentUser } from '@clerk/nextjs/server';
+import { currentUser, type User } from '@clerk/nextjs/server';
 
-export async function isAdmin() {
-  const user = await currentUser();
-  if (!user) return false;
-  return user.publicMetadata?.role === 'adminSeller';
+export async function isAdmin(user?: User | null) {
+  const u = user ?? await currentUser();
+  if (!u) return false;
+  return u.publicMetadata?.role === 'adminSeller';
 }

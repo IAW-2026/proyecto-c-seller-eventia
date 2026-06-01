@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       `${SELLER_URL}/api/seller/eventos/organizador`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-api-key": process.env.SELLER_API_KEY as string },
+        headers: { "Content-Type": "application/json", "x-api-key": process.env.SELLER_API_KEY ?? '' },
         body: JSON.stringify(body),
       }
     );

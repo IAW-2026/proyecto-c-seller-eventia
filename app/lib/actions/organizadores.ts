@@ -3,19 +3,17 @@
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import prisma from '@/app/lib/prisma';
 
-
-/**
- * Definimos el rol que queremos asignar en Clerk.
- * Lo manejamos como metadata para aprovechar Clerk y no guardarlo en la BD.
- */
-
 export async function getOrCreateOrganizador() {
   const { userId } = await auth();
+  if (!userId) throw new Error('No autorizado');
 
-  if (!userId) {
-    throw new Error('No autorizado');
-  }
+  // Si ya existe en la BD, evitamos las llamadas a la API de Clerk
+  const existing = await prisma.organizadores.findUnique({
+    where: { idOrganizador: userId },
+  });
+  if (existing) return existing;
 
+  // Primera vez: obtener datos de Clerk, asignar rol y crear en la BD
   const clerk = await clerkClient();
   const user = await clerk.users.getUser(userId);
 
@@ -23,37 +21,18 @@ export async function getOrCreateOrganizador() {
   // Fallback: si Google/Clerk no trae firstName, usamos username o la parte del email
   const nombre = user.firstName ?? user.username ?? email?.split('@')[0] ?? null;
   const apellido = user.lastName ?? null;
-  
- //agrego el rol de seller a los usuarios que se crean desde esta función
+
   const currentRoles = (user.publicMetadata.roles as string[]) || [];
   if (!currentRoles.includes('seller')) {
-    const client = await clerkClient();
-    await client.users.updateUserMetadata(userId, {
-      publicMetadata: {
-        roles: [...currentRoles, 'seller'],
-      },
+    await clerk.users.updateUserMetadata(userId, {
+      publicMetadata: { roles: [...currentRoles, 'seller'] },
     });
   }
-  
-  const organizador = await prisma.organizadores.upsert({
-    where: { idOrganizador: userId },
-    update: {
-      nombreOrganizador: nombre,
-      apellido,
-      mail: email,
-    },
-    create: {
-      idOrganizador: userId,
-      nombreOrganizador: nombre,
-      apellido,
-      mail: email,
-    },
-  });
 
-  return {
-    ...organizador,
-    nombre,
-    apellido,
-    email,
-  };
+  // upsert por si dos requests llegan al mismo tiempo para el mismo usuario
+  return prisma.organizadores.upsert({
+    where: { idOrganizador: userId },
+    create: { idOrganizador: userId, nombreOrganizador: nombre, apellido, mail: email },
+    update: { nombreOrganizador: nombre, apellido, mail: email },
+  });
 }

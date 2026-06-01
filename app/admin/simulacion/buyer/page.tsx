@@ -58,26 +58,31 @@ export default function BuyerSimulacion() {
     setLoading(false);
   }
 
-  // Select reutilizable con los eventos cargados desde la API
-  // Se usa en dos acciones distintas por eso se extrae como variable
+  // Input con datalist — muestra los eventos como sugerencias pero permite tipear cualquier ID
   const selectEvento = (
-    <select value={idEvento} onChange={(e) => setIdEvento(e.target.value)} className={selectClass}>
-      <option value="">Seleccionar evento</option>
-      {eventos.map((e) => (
-        <option key={e.idEvento} value={e.idEvento}>
-          #{e.idEvento} — {e.nombreEvento}
-        </option>
-      ))}
-    </select>
+    <div className="flex-1">
+      <input
+        list="buyer-eventos-list"
+        placeholder="Seleccioná o escribí un ID de evento"
+        value={idEvento}
+        onChange={(e) => setIdEvento(e.target.value)}
+        className={`${selectClass} w-full`}
+      />
+      <datalist id="buyer-eventos-list">
+        {eventos.map((e) => (
+          <option key={e.idEvento} value={String(e.idEvento)}>{e.nombreEvento}</option>
+        ))}
+      </datalist>
+    </div>
   );
 
   return (
     <div className="space-y-6 bg-[#fcf4e5] px-3 py-5 sm:px-5 lg:px-8">
       <div className="mb-4 pt-1 sm:mb-5">
-        <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#111111] sm:text-[38px]">
+        <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#8b1010] sm:text-[38px]">
           Simulación Buyer
         </h1>
-        <p className="font-label ml-1 mt-1 text-[12px] leading-[1.4] text-[#6e5549]">
+        <p className="font-label ml-1 mt-1 text-[12px] leading-[1.4] text-[#9a444a]">
           Simulá las llamadas que hace la app de compras al seller
         </p>
       </div>

@@ -84,10 +84,10 @@ export default function PaymentsSimulacion() {
   return (
     <div className="space-y-6 bg-[#fcf4e5] px-3 py-5 sm:px-5 lg:px-8">
       <div className="mb-4 pt-1 sm:mb-5">
-        <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#111111] sm:text-[38px]">
+        <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#8b1010] sm:text-[38px]">
           Simulación Payments
         </h1>
-        <p className="font-label ml-1 mt-1 text-[12px] leading-[1.4] text-[#6e5549]">
+        <p className="font-label ml-1 mt-1 text-[12px] leading-[1.4] text-[#9a444a]">
           Simulá las notificaciones que envía la app de pagos al seller
         </p>
       </div>
@@ -107,18 +107,18 @@ export default function PaymentsSimulacion() {
         {/* Acción 1 y 3 comparten el mismo select de evento */}
         <div className="rounded-[20px] border border-[#eadfd2] bg-[#f9f4ed] p-5 flex flex-col gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#b38c7d]">Acciones 1 y 3 — por evento</p>
-          <select
+          <input
+            list="pay-eventos-list"
+            placeholder="Seleccioná o escribí un ID de evento"
             value={idEvento}
             onChange={(e) => setIdEvento(e.target.value)}
             className={selectClass}
-          >
-            <option value="">Seleccionar evento</option>
+          />
+          <datalist id="pay-eventos-list">
             {eventos.map((e) => (
-              <option key={e.idEvento} value={e.idEvento}>
-                #{e.idEvento} — {e.nombreEvento}
-              </option>
+              <option key={e.idEvento} value={String(e.idEvento)}>{e.nombreEvento}</option>
             ))}
-          </select>
+          </datalist>
           <div className="flex flex-col gap-2 sm:flex-row">
             {/* Acción 1: pedir detalle del evento seleccionado */}
             <button onClick={pedirDetalleEvento} disabled={!idEvento} className={`${btnSecondary} w-full sm:w-auto`}>
@@ -135,18 +135,20 @@ export default function PaymentsSimulacion() {
         <div className="rounded-[20px] border border-[#eadfd2] bg-[#f9f4ed] p-5 flex flex-col gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#b38c7d]">Acción 2 — estado de transacción</p>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <select
+            <input
+              list="pay-pedidos-list"
+              placeholder="Seleccioná o escribí un ID de pedido"
               value={idPedido}
               onChange={(e) => setIdPedido(e.target.value)}
               className={selectClass}
-            >
-              <option value="">Seleccionar pedido</option>
+            />
+            <datalist id="pay-pedidos-list">
               {pedidos.map((p) => (
-                <option key={p.idPedido} value={p.idPedido}>
-                  #{p.idPedido} — Evento {p.idEvento} — {p.estado} — ${p.monto}
+                <option key={p.idPedido} value={String(p.idPedido)}>
+                  #{p.idPedido} — {p.estado} — ${p.monto}
                 </option>
               ))}
-            </select>
+            </datalist>
             <select
               value={estadoTransaccion}
               onChange={(e) => setEstadoTransaccion(e.target.value)}
