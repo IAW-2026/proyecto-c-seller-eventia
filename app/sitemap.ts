@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 
 // Solo la home es pública — /organizador y /admin están en robots.ts como disallow
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+  const base = process.env.SELLER_BASE_URL!;
   return [
     {
       url: base,
