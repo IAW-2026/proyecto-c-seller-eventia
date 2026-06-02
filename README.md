@@ -14,8 +14,8 @@
 
 | Rol | Email | Contraseña |
 |---|---|---|
-| Administrador |admin+clerktest@iaw.com | iawuser#|
-| Organizador |seller+clerktest@iaw.com | iawuser#|
+| Administrador |admin+clerk_test@iaw.com | iawuser#|
+| Organizador |seller+clerk_test@iaw.com | iawuser#|
 
 ---
 
