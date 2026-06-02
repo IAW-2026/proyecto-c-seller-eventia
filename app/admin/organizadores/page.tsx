@@ -33,7 +33,7 @@ export default async function AdminOrganizadoresPage({
       orderBy: { nombreOrganizador: 'asc' },
       skip: (paginaActual - 1) * POR_PAGINA,
       take: POR_PAGINA,
-      include: { _count: { select: { eventos: true, pedidos: true } } },
+      include: { _count: { select: { eventos: true, pedidos: { where: { estado: 'PAGADO' } } } } },
     }),
     prisma.organizadores.count({ where }),
   ]);
@@ -47,7 +47,7 @@ export default async function AdminOrganizadoresPage({
           Organizadores
         </h1>
         <p className="font-label ml-1 mt-1 w-fit text-[12px] leading-[1.4] text-[#9a444a]">
-          GestionÃ¡ los organizadores de la plataforma
+          Gestioná los organizadores de la plataforma
         </p>
       </div>
 
@@ -58,7 +58,7 @@ export default async function AdminOrganizadoresPage({
       {search && (
         <p className="text-sm text-slate-500">
           {total === 0
-            ? 'Sin resultados para la bÃºsqueda'
+            ? 'Sin resultados para la búsqueda'
             : `${total} resultado${total !== 1 ? 's' : ''} encontrados`}
         </p>
       )}

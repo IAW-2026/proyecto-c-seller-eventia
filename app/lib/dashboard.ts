@@ -1,6 +1,5 @@
 import prisma from '@/app/lib/prisma';
 
-// Tipos de retorno del helper
 type MetricData = {
   totalEventos: number;
   ticketsSold: number;

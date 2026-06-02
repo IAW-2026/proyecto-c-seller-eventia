@@ -15,7 +15,6 @@ export async function POST(request: Request) {
     }
 
     // TODO: reemplazar con lógica real del buyer (notificar usuario, actualizar estado, etc.)
-    console.log("Pedidos cancelados recibidos:", idsPedidos);
 
     return NextResponse.json({ recibidos: idsPedidos }, { status: 200 });
   } catch (error) {

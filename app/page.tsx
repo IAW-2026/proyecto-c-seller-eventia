@@ -195,7 +195,7 @@ const FEATURES = [
   {
     icon: Rocket,
     iconBg: 'var(--color-primary)',
-    tint: false,
+    tint: true,
     title: 'lanzamiento rápido',
     desc: 'Configurá la landing de tu evento en minutos con plantillas personalizables, listas para compartir.',
   },
@@ -209,7 +209,7 @@ const FEATURES = [
   {
     icon: QrCode,
     iconBg: 'var(--color-primary)',
-    tint: false,
+    tint: true,
     title: 'check-in inteligente',
     desc: 'Agilizá la entrada con escaneo de QR integrado: seguro, sin filas y extremadamente rápido.',
   },

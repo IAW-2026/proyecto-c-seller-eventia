@@ -81,7 +81,7 @@ export async function POST(request: Request) {
         },
       });
     }, { maxWait: 10000, timeout: 15000 });
-
+    // aca cuando se junten las apps solo se envia el idPedido
     return new Response(JSON.stringify({ ...pedido, pedidosCancelados: idsCancelados }), {
       status: 201,
       headers: { "Content-Type": "application/json" },
