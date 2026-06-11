@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model eventos {
+  idEvento      Int     @id @default(autoincrement())
+  nombreEvento  String?
+  descripcion   String?
+  fecha         DateTime?
+  ubicacion     String?
+  stock         Int?
+  idOrganizador String
+  precio        Float?  @db.Real
+  categoria     String?
+  imagenes      String[] @default([])
+
+  organizador   organizadores @relation(fields: [idOrganizador], references: [idOrganizador])
+  pedidos       pedidos[]
+}
+
+model organizadores {
+  idOrganizador     String  @id            // usar el ID que entrega Clerk (ej. user.id)
+  nombreOrganizador String?
+  apellido          String?
+  mail              String?
+  eventos           eventos[]
+  pedidos           pedidos[]
+}
+
+enum EstadoPedido {
+  PENDIENTE
+  PAGADO
+  CANCELADO
+}
+
+model pedidos {
+  idPedido      Int     @id @default(autoincrement())
+  idOrganizador String
+  idUsuario     String?
+  idEvento      Int
+  cantEntradas  Int
+  monto         Float   @db.Real
+  estado        EstadoPedido
+  createdAt     DateTime     @default(now())
+
+  organizador   organizadores @relation(fields: [idOrganizador], references: [idOrganizador])
+  evento        eventos?       @relation(fields: [idEvento], references: [idEvento])
+}
