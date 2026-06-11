@@ -2,16 +2,16 @@ import { NextResponse } from "next/server";
 import prisma from "../../../../../lib/prisma";
 
 // GET /api/seller/eventos/[idEvento]/organizador
-// Devuelve el organizador del evento con el id dado
+// Devuelve el idOrganizador del evento con el id dado
 export async function GET(
   _request: Request,
-  { params }: { params: { idEvento: string } }
+  { params }: { params: Promise<{ idEvento: string }> }
 ) {
   try {
-    const idEvento = Number(params.idEvento);
+    const { idEvento } = await params;
 
     const evento = await prisma.eventos.findUnique({
-      where: { idEvento },
+      where: { idEvento: Number(idEvento) },
     });
 
     if (!evento) {
