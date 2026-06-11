@@ -13,12 +13,12 @@ model eventos {
   fecha         DateTime?
   ubicacion     String?
   stock         Int?
-  idOrganizador String?
+  idOrganizador String
   precio        Float?  @db.Real
   categoria     String?
   imagenes      String[] @default([])
 
-  organizador   organizadores? @relation(fields: [idOrganizador], references: [idOrganizador])
+  organizador   organizadores @relation(fields: [idOrganizador], references: [idOrganizador])
   pedidos       pedidos[]
 }
 
@@ -39,7 +39,7 @@ enum EstadoPedido {
 
 model pedidos {
   idPedido      Int     @id @default(autoincrement())
-  idOrganizador String?
+  idOrganizador String
   idUsuario     String?
   idEvento      Int
   cantEntradas  Int
@@ -47,6 +47,6 @@ model pedidos {
   estado        EstadoPedido
   createdAt     DateTime     @default(now())
 
-  organizador   organizadores? @relation(fields: [idOrganizador], references: [idOrganizador])
+  organizador   organizadores @relation(fields: [idOrganizador], references: [idOrganizador])
   evento        eventos?       @relation(fields: [idEvento], references: [idEvento])
 }

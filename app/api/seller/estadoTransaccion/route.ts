@@ -16,11 +16,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const idPedido = Number(body.idPedido);
-    const estadoTransaccion = String(body.estadoTransaccion ?? "");
-
-    if (!Number.isInteger(idPedido) || !estadoTransaccion) {
-      return new Response(null, { status: 400 });
-    }
+    const estadoTransaccion = String(body.estadoTransaccion);
 
     const pedido = await prisma.pedidos.findUnique({
       where: { idPedido },
@@ -31,7 +27,7 @@ export async function POST(request: Request) {
         estado: true,
       },
     });
-
+    //no hace falta
     if (!pedido) {
       return jsonResponse(404, "PEDIDO_NO_ENCONTRADO", "No se encontró el pedido.");
     }
@@ -118,7 +114,7 @@ export async function POST(request: Request) {
         });
       });
 
-      fetch(`${BUYER_URL}/api/buyer/pedidoCancelado`, {
+      await fetch(`${BUYER_URL}/api/buyer/pedidoCancelado`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-api-key": process.env.BUYER_API_KEY ?? "" },
         body: JSON.stringify({ idsPedidos: [idPedido] }),

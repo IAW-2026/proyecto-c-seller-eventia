@@ -19,12 +19,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Evento no encontrado" }, { status: 404 });
     }
     
-    if (!evento.organizador) {
-        return NextResponse.json({ error: "Organizador no encontrado" }, { status: 404 });
-    }
+  
     return NextResponse.json({ idOrganizador: evento.organizador.idOrganizador }, { status: 200 });
   } catch (error) {
-    console.error("[seller/eventos/organizador] Error:", error);
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }

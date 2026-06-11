@@ -161,7 +161,14 @@ export default function NuevoEventoForm({
                       disabled={{ before: hoyInicio }}
                       onSelect={(d) => {
                         setFechaSelected(d);
-                        setValue('fecha', d ? d.toISOString().split('T')[0] : '', { shouldValidate: true });
+                        if (d) {
+                          const yyyy = d.getFullYear();
+                          const mm = String(d.getMonth() + 1).padStart(2, '0');
+                          const dd = String(d.getDate()).padStart(2, '0');
+                          setValue('fecha', `${yyyy}-${mm}-${dd}`, { shouldValidate: true });
+                        } else {
+                          setValue('fecha', '', { shouldValidate: true });
+                        }
                         setFechaOpen(false);
                       }}
                       defaultMonth={fechaSelected ?? new Date()}
