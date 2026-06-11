@@ -67,8 +67,11 @@ export async function deleteEventoAction(idEvento: number) {
     if (!existing) return { error: "Evento no encontrado" };
     if (!admin && existing.idOrganizador !== userId) return { error: "No autorizado a eliminar este evento" };
 
-    const pedidosCount = await prisma.pedidos.count({ where: { idEvento } });
-    if (pedidosCount > 0) return { error: "No se puede eliminar un evento que tiene pedidos asociados" };
+    const pedidosActivos = await prisma.pedidos.count({
+    where: { idEvento, estado: { not: "CANCELADO" } },
+   });
+   if (pedidosActivos > 0) return { error: "No se puede eliminar un evento con pedidos pendientes o pagados" };
+
 
     await prisma.eventos.delete({ where: { idEvento } });
     revalidatePath('/organizador/eventos');
