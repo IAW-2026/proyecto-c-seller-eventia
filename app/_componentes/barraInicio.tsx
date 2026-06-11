@@ -17,10 +17,12 @@ function HomeIcon() {
 }
 
 export default function BarraInicio() {
-  const pathname = usePathname();
+  const pathname = usePathname(); //devuelve url actual 
   const { isSignedIn, user } = useUser();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+  // true-> alguien logueado false-> nadie logueado y en user todos los datos del usuario y metadata
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // setea en false mobileMenuOpen y lo cambia a true cuando se apreta el boton del menu en mobile, y vuelve a false cuando se apreta el boton de cerrar menu o se hace click en algun link del menu
+  
+  // chequeo de rol admin: si el usuario está logueado y tiene rol adminSeller, entonces isAdmin es true
   const isAdmin = isSignedIn && esAdmin((user?.publicMetadata ?? {}) as Record<string, unknown>);
   const mainLinkHref = isAdmin ? '/admin/reportes' : '/organizador/eventos';
   const mainLinkLabel = isAdmin ? 'Panel de administrador' : 'Mis Eventos';

@@ -26,7 +26,7 @@ export default function HomePage() {
         `,
       }}
     >
-      <BarraInicio />
+      <BarraInicio /> 
       <HeroSection createEventHref={createEventHref} />
       <FeaturesSection />
       <CTABand primaryActionHref={primaryActionHref} />

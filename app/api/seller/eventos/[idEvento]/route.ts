@@ -12,11 +12,7 @@ export async function GET(
   { params }: { params: Promise<{ idEvento: string }> }
 ) {
   const { idEvento } = await params;
-  const id = parseId(idEvento);
-
-  if (id === null) {
-    return NextResponse.json({ error: "ID de evento no válido" }, { status: 400 });
-  }
+  const id = Number(idEvento);
 
   const evento = await prisma.eventos.findUnique({
     where: { idEvento: id },

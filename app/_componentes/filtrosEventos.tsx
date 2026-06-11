@@ -20,6 +20,9 @@ export default function FiltrosEventos({ organizadores }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  // seteo los estados iniciales de los filtros para que si 
+  // recargo la página no pierdan su valor (ej: si vengo de la página 2, el filtro de búsqueda sigue mostrando lo que busqué) y
+  //  para que los inputs sean controlados.
   const [busqueda, setBusqueda] = useState(searchParams.get('search') ?? '');
   const [fechaDesde, setFechaDesde] = useState(searchParams.get('fechaDesde') ?? '');
   const [fechaHasta, setFechaHasta] = useState(searchParams.get('fechaHasta') ?? '');

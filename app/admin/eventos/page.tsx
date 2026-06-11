@@ -59,11 +59,13 @@ export default async function AdminEventosPage({
       </div>
 
       <Suspense fallback={<div className="h-12 w-full rounded-[16px] bg-[#eadfd2] animate-pulse" />}>
+      // muestro el componente de filtros (que incluye el buscador) en suspensión para que no se renderice hasta que tenga los datos de los organizadores, necesarios para mostrar el filtro de organizadores. Si no tuviera que cargar nada (ej: si el filtro de organizadores fuera un input de texto y no un select), no haría falta ponerlo en Suspense.
         <FiltrosEventos organizadores={organizadores} />
       </Suspense>
 
       <ResultadosFiltro
         total={total}
+        // Si hay algún filtro activo (search, categoria, organizador o fecha), muestro el mensaje de resultados encontrados. Si no hay filtros, no muestro nada.
         hayFiltros={!!(search || categoria || organizador || fechaDesde || fechaHasta)}
       />
 

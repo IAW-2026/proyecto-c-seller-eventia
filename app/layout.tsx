@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Eventia',
     locale: 'es_AR',
-  },
+  }, // la info que aparece cuando compartis el link.
 };
 
 export default async function RootLayout({

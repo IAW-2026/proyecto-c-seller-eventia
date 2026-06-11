@@ -29,7 +29,7 @@ export async function getOrCreateOrganizador() {
     });
   }
 
-  // upsert por si dos requests llegan al mismo tiempo para el mismo usuario
+  // este return nadie lo usa PUEDE SACARSE, NO SE UTILIZA------------
   return prisma.organizadores.upsert({
     where: { idOrganizador: userId },
     create: { idOrganizador: userId, nombreOrganizador: nombre, apellido, mail: email },
