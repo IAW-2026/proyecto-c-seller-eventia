@@ -27,6 +27,7 @@ model organizadores {
   nombreOrganizador String?
   apellido          String?
   mail              String?
+  activo            Boolean @default(true)
   eventos           eventos[]
   pedidos           pedidos[]
 }

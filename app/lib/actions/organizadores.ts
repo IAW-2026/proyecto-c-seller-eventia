@@ -2,6 +2,7 @@
 
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import prisma from '@/app/lib/prisma';
+import { revalidatePath } from 'next/cache';
 
 export async function getOrCreateOrganizador() {
   const { userId } = await auth();
@@ -28,11 +29,22 @@ export async function getOrCreateOrganizador() {
       publicMetadata: { roles: [...currentRoles, 'seller'] },
     });
   }
+}
 
-  // este return nadie lo usa PUEDE SACARSE, NO SE UTILIZA------------
-  return prisma.organizadores.upsert({
-    where: { idOrganizador: userId },
-    create: { idOrganizador: userId, nombreOrganizador: nombre, apellido, mail: email },
-    update: { nombreOrganizador: nombre, apellido, mail: email },
+export async function desactivarOrganizador(idOrganizador: string) {
+  const pedidosPagados = await prisma.pedidos.count({
+    where: { idOrganizador, estado: 'PAGADO' },
   });
+
+  if (pedidosPagados > 0) {
+    return { ok: false, error: 'No se puede desactivar el organizador porque tiene pedidos pagados asociados.' };
+  }
+
+  await prisma.organizadores.update({
+    where: { idOrganizador },
+    data: { activo: false },
+  });
+
+  revalidatePath('/admin/organizadores');
+  return { ok: true };
 }
