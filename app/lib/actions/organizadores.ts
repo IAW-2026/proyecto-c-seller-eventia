@@ -29,6 +29,25 @@ export async function getOrCreateOrganizador() {
       publicMetadata: { roles: [...currentRoles, 'seller'] },
     });
   }
+
+  return prisma.organizadores.create({
+    data: {
+      idOrganizador: userId,
+      nombreOrganizador: nombre,
+      apellido,
+      mail: email,
+      activo: true,
+    },
+  });
+}
+
+export async function activarOrganizador(idOrganizador: string) {
+  await prisma.organizadores.update({
+    where: { idOrganizador },
+    data: { activo: true },
+  });
+  revalidatePath('/admin/organizadores');
+  return { ok: true };
 }
 
 export async function desactivarOrganizador(idOrganizador: string) {
