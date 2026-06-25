@@ -19,10 +19,14 @@ export async function PATCH(
       return NextResponse.json({ error: "Organizador no encontrado" }, { status: 404 });
     }
 
-    const clerk = await clerkClient();
-    const user = await clerk.users.getUser(idOrganizador);
-    if (esAdmin(user.publicMetadata as Record<string, unknown>)) {
-      return NextResponse.json({ error: "No se puede desactivar un administrador" }, { status: 403 });
+    try {
+      const clerk = await clerkClient();
+      const user = await clerk.users.getUser(idOrganizador);
+      if (esAdmin(user.publicMetadata as Record<string, unknown>)) {
+        return NextResponse.json({ error: "No se puede desactivar un administrador" }, { status: 403 });
+      }
+    } catch {
+      // Si el usuario no existe en Clerk, no es admin — se permite continuar
     }
 
     const pedidosPagados = await prisma.pedidos.count({
