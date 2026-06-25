@@ -22,7 +22,7 @@ export default function HomePage() {
         background: `
           radial-gradient(900px 600px at 85% -5%, rgba(254, 158, 162, 0.22), transparent 60%),
           radial-gradient(700px 500px at -5% 30%, rgba(101, 0, 3, 0.05), transparent 55%),
-          var(--color-surface-alt)
+          var(--color-background)
         `,
       }}
     >
@@ -73,21 +73,28 @@ function HeroSection({ createEventHref }: { createEventHref: string }) {
         </Link>
       </div>
 
-      {/* Columna derecha: patrón + velo + card flotante */}
-      <div className="relative hidden overflow-hidden lg:flex lg:items-center lg:justify-center">
-        {/* Patrón retro a sangre */}
-        <RetroPattern id="hero" tile={92} />
+      {/* Columna derecha: imagen de fondo + velo + card flotante */}
+      <div className="relative mt-8 flex h-64 items-center justify-center sm:h-80 md:mt-0 md:h-[450px] lg:h-auto lg:items-center lg:justify-center">
 
-        {/* Velo oxblood en los bordes para contraste */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'radial-gradient(ellipse at center, transparent 35%, rgba(101, 0, 3, 0.28) 100%)',
-          }}
-        />
+        {/* Capa imagen — overflow-hidden acá para respetar el border-radius sin cortar las cards */}
+        <div className="absolute inset-0 overflow-hidden rounded-3xl lg:rounded-none">
+          <img
+            src="/imgHome.jpeg"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          {/* Velo oscuro para contraste */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'radial-gradient(ellipse at center, transparent 35%, rgba(101, 0, 3, 0.28) 100%)',
+            }}
+          />
+        </div>
 
-        {/* Wrapper relativo para las dos cards superpuestas */}
-        <div className="relative z-10">
+        {/* Wrapper de cards — escala según breakpoint para que quepan en mobile */}
+        <div className="relative z-10 scale-[0.68] sm:scale-[0.82] lg:scale-100">
           {/* Card de evento principal */}
           <div
             className="w-[290px] overflow-hidden rounded-[22px] bg-white"

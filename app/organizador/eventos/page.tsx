@@ -21,7 +21,7 @@ export default async function EventosPage({ searchParams }: { searchParams: Sear
 
   // El h1 se envia al navegador apenas termina auth, sin esperar las queries de DB
   return (
-    <div className="space-y-6 bg-[#fcf4e5] px-3 py-5 sm:px-5 lg:px-8">
+    <div className="space-y-6 bg-background px-3 py-5 sm:px-5 lg:px-8">
       <div className="mb-4 pt-1 sm:mb-5">
         <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#8b1010] sm:text-[38px]">
           Mis Eventos

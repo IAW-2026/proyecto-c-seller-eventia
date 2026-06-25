@@ -9,6 +9,7 @@ import { Suspense } from 'react';
 import ResultadosFiltro from '@/app/_componentes/resultadosFiltro';
 import { EVENTOS_POR_PAGINA } from '@/app/lib/constants';
 import { buildFechaFiltro } from '@/app/lib/utils';
+import { CalendarDays } from 'lucide-react';
 
 export default async function AdminEventosPage({
   searchParams,
@@ -48,14 +49,24 @@ export default async function AdminEventosPage({
   const totalPaginas = Math.ceil(total / EVENTOS_POR_PAGINA);
 
   return (
-    <div className="space-y-6 bg-[#fcf4e5] px-3 py-5 sm:px-5 lg:px-8">
-      <div className="mb-4 pt-1 sm:mb-5">
-        <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#8b1010] sm:text-[38px]">
-          Eventos
-        </h1>
-        <p className="font-label ml-1 mt-1 w-fit text-[12px] leading-[1.4] text-[#9a444a]">
-          Todos los eventos de la plataforma
-        </p>
+    <div className="space-y-6 bg-background px-3 py-5 sm:px-5 lg:px-8">
+      {/* Banner */}
+      <div
+        className="relative overflow-hidden rounded-3xl border border-[var(--color-primary)]/20 shadow-[var(--color-shadow)] bg-cover bg-center min-h-[180px] flex items-center p-8 md:p-10"
+        style={{ backgroundImage: "url('/imgHome.jpeg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary-container)]/30 via-transparent to-transparent mix-blend-overlay pointer-events-none" />
+        <div className="relative z-10 max-w-md flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 bg-[var(--color-primary)] text-[var(--color-primary-foreground)] text-[10px] font-label font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full w-fit">
+            <CalendarDays className="w-3 h-3" /> Eventos
+          </span>
+          <h1 className="font-display text-3xl md:text-5xl leading-none mt-2" style={{ color: 'var(--color-primary)' }}>
+            Eventos
+          </h1>
+          <p className="text-sm font-body font-medium mt-1" style={{ color: 'var(--color-primary)', opacity: 0.9 }}>
+            Todos los eventos de la plataforma
+          </p>
+        </div>
       </div>
 
       <Suspense fallback={<div className="h-12 w-full rounded-[16px] bg-[#eadfd2] animate-pulse" />}>

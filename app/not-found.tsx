@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: '404 — Página no encontrada' };
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#fcf4e5] px-6 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
       <span
         className="font-display text-[120px] leading-none tracking-[-0.04em] select-none sm:text-[160px]"
         style={{ color: 'var(--color-primary)', opacity: 0.15 }}

@@ -30,7 +30,7 @@
   --color-footer-link: rgba(255, 249, 234, 0.82);
   --color-footer-border: rgba(255, 249, 234, 0.16);
   --color-footer-icon-border: rgba(255, 249, 234, 0.25);
-  --background: oklch(1 0 0);
+  --background: #fcf4e5;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);

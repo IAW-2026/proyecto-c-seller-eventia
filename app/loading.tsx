@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function Loading() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#fcf4e5]">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background">
       <Image
         src="/logo.png"
         alt="Eventia"

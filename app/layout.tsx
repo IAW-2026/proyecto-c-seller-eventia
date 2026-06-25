@@ -37,7 +37,7 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="es" className={cn(ffDisplay.variable, ffBody.variable, ffLabel.variable, "font-sans", geist.variable)}>
-        <body className="flex min-h-screen flex-col bg-[#fcf4e5]">
+        <body className="flex min-h-screen flex-col bg-background">
           <main className="flex-1">{children}</main>
         </body>
       </html>

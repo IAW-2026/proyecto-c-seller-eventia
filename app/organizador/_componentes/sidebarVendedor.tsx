@@ -8,7 +8,7 @@ export default function SidebarVendedor({ esAdmin = false }: { esAdmin?: boolean
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full md:h-[calc(100vh-4rem)] w-full shrink-0 flex-col overflow-y-auto md:border-r border-[#e8ddd5] bg-[#fcf4e5] py-5">
+    <aside className="flex h-full md:h-[calc(100vh-4rem)] w-full shrink-0 flex-col overflow-y-auto md:border-r border-[#e8ddd5] bg-background py-5">
       <span className="px-4 pt-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8b1010]">
         General
       </span>

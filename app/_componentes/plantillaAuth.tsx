@@ -24,8 +24,8 @@ export default function PlantillaAuth({ children, sidebar }: PlantillaAuthProps)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#fcf4e5] text-slate-900">
-      <header className="sticky top-0 z-40 h-16 border-b border-[#e8ddd5] bg-[#fcf4e5]/95 backdrop-blur">
+    <div className="min-h-screen bg-background text-slate-900">
+      <header className="sticky top-0 z-40 h-16 border-b border-[#e8ddd5] bg-background/95 backdrop-blur">
         <div className="relative flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <button
@@ -57,7 +57,7 @@ export default function PlantillaAuth({ children, sidebar }: PlantillaAuthProps)
 
       <div className="flex min-h-[calc(100vh-4rem)]">
         <div className="hidden md:sticky md:top-16 md:self-start md:block md:w-[200px] md:shrink-0">{sidebar}</div>
-        <main className="min-w-0 flex-1 overflow-x-hidden bg-[#fcf4e5]">
+        <main className="min-w-0 flex-1 overflow-x-hidden bg-background">
           <div className="px-3 pt-3 sm:px-5 lg:px-8">
             <BotonVolver />
           </div>
@@ -75,7 +75,7 @@ export default function PlantillaAuth({ children, sidebar }: PlantillaAuthProps)
             className="absolute inset-0 bg-black/40"
           />
 
-          <div className="absolute left-0 top-0 h-full w-72 bg-[#fcf4e5] shadow-2xl">
+          <div className="absolute left-0 top-0 h-full w-72 bg-background shadow-2xl">
             <div className="flex h-16 items-center justify-between border-b border-[#e8ddd5] px-4">
               <span className="font-label text-[12px] font-bold uppercase tracking-[0.14em] text-slate-400">
                 Menú

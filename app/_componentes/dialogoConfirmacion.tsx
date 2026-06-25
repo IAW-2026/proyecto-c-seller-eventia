@@ -26,7 +26,7 @@ export default function DialogoConfirmacion({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1f1713]/45 px-4 backdrop-blur-[2px]">
-      <div className="w-full max-w-md rounded-[24px] border border-[#eadfd2] bg-[#fcf4e5] p-5 shadow-[0_20px_50px_rgba(55,32,20,0.18)] sm:p-6">
+      <div className="w-full max-w-md rounded-[24px] border border-[#eadfd2] bg-background p-5 shadow-[0_20px_50px_rgba(55,32,20,0.18)] sm:p-6">
         <div className="mb-4 flex items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#fde3d4] text-[var(--color-primary-vivid)]">
             <span className="text-lg leading-none">!</span>

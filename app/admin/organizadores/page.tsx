@@ -6,6 +6,7 @@ import TablaOrganizadores from '@/app/admin/organizadores/_componentes/tablaOrga
 import BuscadorOrganizadores from '@/app/admin/organizadores/_componentes/buscadorOrganizadores';
 import Paginacion from '@/app/_componentes/paginacion';
 import { Suspense } from 'react';
+import { Users } from 'lucide-react';
 
 const POR_PAGINA = 10;
 
@@ -41,14 +42,24 @@ export default async function AdminOrganizadoresPage({
   const totalPaginas = Math.ceil(total / POR_PAGINA);
 
   return (
-    <div className="space-y-6 bg-[#fcf4e5] px-3 py-5 sm:px-5 lg:px-8">
-      <div className="mb-4 pt-1 sm:mb-5">
-        <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#8b1010] sm:text-[38px]">
-          Organizadores
-        </h1>
-        <p className="font-label ml-1 mt-1 w-fit text-[12px] leading-[1.4] text-[#9a444a]">
-          Gestioná los organizadores de la plataforma
-        </p>
+    <div className="space-y-6 bg-background px-3 py-5 sm:px-5 lg:px-8">
+      {/* Banner */}
+      <div
+        className="relative overflow-hidden rounded-3xl border border-[var(--color-primary)]/20 shadow-[var(--color-shadow)] bg-cover bg-center min-h-[180px] flex items-center p-8 md:p-10"
+        style={{ backgroundImage: "url('/imgHome.jpeg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary-container)]/30 via-transparent to-transparent mix-blend-overlay pointer-events-none" />
+        <div className="relative z-10 max-w-md flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 bg-[var(--color-primary)] text-[var(--color-primary-foreground)] text-[10px] font-label font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full w-fit">
+            <Users className="w-3 h-3" /> Organizadores
+          </span>
+          <h1 className="font-display text-3xl md:text-5xl leading-none mt-2 whitespace-nowrap" style={{ color: 'var(--color-primary)' }}>
+            Organizadores
+          </h1>
+          <p className="text-sm font-body font-medium mt-1" style={{ color: 'var(--color-primary)', opacity: 0.9 }}>
+            Gestioná los organizadores de la plataforma
+          </p>
+        </div>
       </div>
 
       <Suspense>

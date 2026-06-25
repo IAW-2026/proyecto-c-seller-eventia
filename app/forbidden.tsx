@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: '403 — Acceso restringido' };
 
 export default function Forbidden() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#fcf4e5] px-6 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
       <div
         className="mb-6 flex h-20 w-20 items-center justify-center rounded-[28px]"
         style={{ background: 'rgba(101, 0, 3, 0.08)' }}

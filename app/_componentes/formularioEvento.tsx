@@ -96,7 +96,7 @@ export default function NuevoEventoForm({
   hoyInicio.setHours(0, 0, 0, 0);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#fcf4e5] px-3 py-5 sm:px-5 lg:px-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-background px-3 py-5 sm:px-5 lg:px-8">
 
       <div className="mb-4 sm:mb-5">
         <h1 className="font-display text-[30px] leading-tight tracking-[-0.02em] text-[#8b1010] sm:text-[38px]">

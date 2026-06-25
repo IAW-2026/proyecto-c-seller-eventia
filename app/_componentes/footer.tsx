@@ -1,11 +1,13 @@
 import Link from 'next/link';
 
-const links = [
-  { label: 'Inicio', href: '/' },
-  { label: 'Mis Eventos', href: '/organizador/eventos' },
-];
-
 export default function Footer() {
+  const buyerUrl = process.env.BUYER_BASE_URL;
+
+  const links = [
+    { label: 'Inicio', href: '/' },
+    { label: 'Mis Eventos', href: '/organizador/eventos' },
+    ...(buyerUrl ? [{ label: 'Explorar eventos', href: buyerUrl }] : []),
+  ];
   return (
     <footer className="px-8 pb-[30px] pt-[54px] sm:px-14" style={{ background: 'var(--color-primary)', color: 'var(--color-primary-foreground)' }}>
       <div
@@ -37,6 +39,7 @@ export default function Footer() {
                 href={href}
                 className="font-body py-[6px] text-[14.5px] no-underline transition hover:translate-x-0.5"
                 style={{ color: 'var(--color-footer-link)' }}
+                {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               >
                 {label}
               </Link>
