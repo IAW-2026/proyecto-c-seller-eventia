@@ -13,11 +13,11 @@ export default function BotonesOrganizador({
   const [pending, startTransition] = useTransition();
 
   function handleActivar() {
-    startTransition(() => activarOrganizador(idOrganizador));
+    startTransition(async () => { await activarOrganizador(idOrganizador); });
   }
 
   function handleDesactivar() {
-    startTransition(() => desactivarOrganizador(idOrganizador));
+    startTransition(async () => { await desactivarOrganizador(idOrganizador); });
   }
 
   return (

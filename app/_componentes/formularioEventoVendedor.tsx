@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import NuevoEventoForm, { FormValues } from '@/app/_componentes/formularioEvento';
 import { upsertEventoAction } from '@/app/lib/actions/eventos';
 import { type eventos } from '@prisma/client';
-import { CATEGORIAS, TZ_OFFSET_MS } from '@/app/lib/constants';
+import { CATEGORIAS } from '@/app/lib/constants';
 
 interface Props {
   eventoInicial?: eventos | null;
@@ -21,10 +21,14 @@ export default function FormularioEventoClient({ eventoInicial }: Props) {
   const ciudadInicial = partes.length > 1 ? partes.pop()?.trim() ?? '' : '';
   const direccionInicial = partes.join(',').trim();
 
-  // La DB guarda en UTC. Para mostrar en el form hay que aplicar el offset local
-  const fechaArg = eventoInicial?.fecha
-    ? new Date(new Date(eventoInicial.fecha).getTime() + TZ_OFFSET_MS)
-    : null;
+  // La DB guarda en UTC. El objeto Date del browser lo convierte automáticamente a la tz local.
+  const fechaLocal = eventoInicial?.fecha ? new Date(eventoInicial.fecha) : null;
+  const fechaDefault = fechaLocal
+    ? `${fechaLocal.getFullYear()}-${String(fechaLocal.getMonth() + 1).padStart(2, '0')}-${String(fechaLocal.getDate()).padStart(2, '0')}`
+    : '';
+  const horaDefault = fechaLocal
+    ? `${String(fechaLocal.getHours()).padStart(2, '0')}:${String(fechaLocal.getMinutes()).padStart(2, '0')}`
+    : '';
 
   const {
     register,
@@ -36,8 +40,8 @@ export default function FormularioEventoClient({ eventoInicial }: Props) {
     defaultValues: {
       nombreEvento: eventoInicial?.nombreEvento ?? '',
       descripcion: eventoInicial?.descripcion ?? '',
-      fecha: fechaArg ? fechaArg.toISOString().slice(0, 10) : '',
-      hora: fechaArg ? fechaArg.toISOString().slice(11, 16) : '',
+      fecha: fechaDefault,
+      hora: horaDefault,
       direccion: direccionInicial,
       ciudad: ciudadInicial,
       stock: eventoInicial?.stock ?? ('' as unknown as number),
@@ -52,7 +56,9 @@ export default function FormularioEventoClient({ eventoInicial }: Props) {
   const watchCiudad = watch('ciudad');
 
   const onSubmit = async (data: FormValues) => {
-    const result = await upsertEventoAction(eventoInicial?.idEvento ?? null, data, imagenes);
+    // new Date("YYYY-MMDDTHH:MM:00") en el browser interpreta la hora como local → .toISOString() da UTC
+    const fechaHoraUtc = new Date(`${data.fecha}T${data.hora}:00`).toISOString();
+    const result = await upsertEventoAction(eventoInicial?.idEvento ?? null, data, imagenes, fechaHoraUtc);
     if (result?.error) alert(result.error);
   };
 

@@ -6,9 +6,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 import { isAdmin } from "@/app/lib/admin";
 import { type FormValues } from "@/app/_componentes/formularioEvento";
-import { TZ_OFFSET } from "@/app/lib/constants";
-
-export async function upsertEventoAction(idEvento: number | null, data: FormValues, imagenes: string[] = []) {
+export async function upsertEventoAction(idEvento: number | null, data: FormValues, imagenes: string[] = [], fechaHoraUtc: string) {
   const user = await currentUser();
   if (!user) throw new Error("No autorizado");
   const userId = user.id;
@@ -25,7 +23,7 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
   const camposEvento = {
     nombreEvento: data.nombreEvento,
     descripcion: data.descripcion,
-    fecha: new Date(`${data.fecha}T${data.hora}:00${TZ_OFFSET}`),
+    fecha: new Date(fechaHoraUtc),
     ubicacion: `${data.direccion}, ${data.ciudad}`,
     stock: data.stock,
     precio: data.precio,
