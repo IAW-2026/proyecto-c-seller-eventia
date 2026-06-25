@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../../lib/prisma";
+import { clerkClient } from "@clerk/nextjs/server";
+import { esAdmin } from "@/app/lib/rolesAdmin";
 
 // PATCH /api/seller/datos/organizadores/[idOrganizador] — Desactivar un organizador
 export async function PATCH(
@@ -15,6 +17,12 @@ export async function PATCH(
 
     if (!organizador) {
       return NextResponse.json({ error: "Organizador no encontrado" }, { status: 404 });
+    }
+
+    const clerk = await clerkClient();
+    const user = await clerk.users.getUser(idOrganizador);
+    if (esAdmin(user.publicMetadata as Record<string, unknown>)) {
+      return NextResponse.json({ error: "No se puede desactivar un administrador" }, { status: 403 });
     }
 
     const pedidosPagados = await prisma.pedidos.count({
