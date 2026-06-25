@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 import { isAdmin } from "@/app/lib/admin";
 import { type FormValues } from "@/app/_componentes/formularioEvento";
+import { eliminarEvento, modificarEvento } from "@/app/lib/eventosHelpers";
 export async function upsertEventoAction(idEvento: number | null, data: FormValues, imagenes: string[] = [], fechaHoraUtc: string) {
   const user = await currentUser();
   if (!user) throw new Error("No autorizado");
@@ -39,7 +40,7 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
       if (!admin && existing.idOrganizador !== userId) throw new Error("No autorizado a editar este evento");
 
       // no se incluye idOrganizador para no sobreescribir al dueño original
-      await prisma.eventos.update({ where: { idEvento }, data: camposEvento });
+      await modificarEvento(idEvento, camposEvento);
     } else {
       await prisma.eventos.create({ data: { ...camposEvento, idOrganizador: userId } });
     }
@@ -65,13 +66,9 @@ export async function deleteEventoAction(idEvento: number) {
     if (!existing) return { error: "Evento no encontrado" };
     if (!admin && existing.idOrganizador !== userId) return { error: "No autorizado a eliminar este evento" };
 
-    const pedidosActivos = await prisma.pedidos.count({
-    where: { idEvento, estado: { not: "CANCELADO" } },
-   });
-   if (pedidosActivos > 0) return { error: "No se puede eliminar un evento con pedidos pendientes o pagados" };
+    const result = await eliminarEvento(idEvento);
+    if ("error" in result) return result;
 
-
-    await prisma.eventos.delete({ where: { idEvento } });
     revalidatePath('/organizador/eventos');
     revalidatePath('/admin/eventos');
     return { success: true };

@@ -35,7 +35,7 @@ export default function useConfirmarEliminar(itemsOnPageCount?: number): UseConf
     if (!selectedId) return;
     setOpen(false);
     const result = await deleteEventoAction(selectedId);
-    if (result?.error) {
+    if (result && 'error' in result) {
       setToastMessage(result.error);
       return;
     }
