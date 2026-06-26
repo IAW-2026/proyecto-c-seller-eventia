@@ -3,6 +3,7 @@
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import prisma from '@/app/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { esAdmin } from '@/app/lib/rolesAdmin';
 
 export async function getOrCreateOrganizador() {
   const { userId } = await auth();
@@ -51,12 +52,22 @@ export async function activarOrganizador(idOrganizador: string) {
 }
 
 export async function desactivarOrganizador(idOrganizador: string) {
+  try {
+    const clerk = await clerkClient();
+    const user = await clerk.users.getUser(idOrganizador);
+    if (esAdmin(user.publicMetadata as Record<string, unknown>)) {
+      return { ok: false, error: 'No se puede desactivar a un organizador con rol de administrador.' };
+    }
+  } catch {
+    // Si el usuario no existe en Clerk, no es admin — se permite continuar
+  }
+
   const pedidosPagados = await prisma.pedidos.count({
     where: { idOrganizador, estado: 'PAGADO' },
   });
 
   if (pedidosPagados > 0) {
-    return { ok: false, error: 'No se puede desactivar el organizador porque tiene pedidos pagados asociados.' };
+    return { ok: false, error: 'El organizador tiene pedidos pagados asociados.' };
   }
 
   await prisma.organizadores.update({

@@ -2,7 +2,6 @@
 
 import prisma from "@/app/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 import { isAdmin } from "@/app/lib/admin";
 import { type FormValues } from "@/app/_componentes/formularioEvento";
@@ -51,7 +50,7 @@ export async function upsertEventoAction(idEvento: number | null, data: FormValu
 
   revalidatePath('/organizador/eventos');
   revalidatePath('/admin/eventos');
-  redirect('/organizador/eventos');
+  return { success: true, isNew: !idEvento };
 }
 
 export async function deleteEventoAction(idEvento: number) {

@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import NuevoEventoForm, { FormValues } from '@/app/_componentes/formularioEvento';
+import Toast from '@/app/_componentes/toast';
 import { upsertEventoAction } from '@/app/lib/actions/eventos';
 import { type eventos } from '@prisma/client';
 import { CATEGORIAS } from '@/app/lib/constants';
@@ -12,8 +14,9 @@ interface Props {
 }
 
 export default function FormularioEventoClient({ eventoInicial }: Props) {
-  // URLs de imágenes subidas a Uploadthing, se envían junto con el formulario
+  const router = useRouter();
   const [imagenes, setImagenes] = useState<string[]>(eventoInicial?.imagenes ?? []);
+  const [toast, setToast] = useState<{ title: string; message: string; type: 'success' | 'error' } | null>(null);
 
   // La ubicación se guarda como "dirección, ciudad" — la separamos para los campos del form
   const ubicacion = eventoInicial?.ubicacion ?? '';
@@ -59,10 +62,29 @@ export default function FormularioEventoClient({ eventoInicial }: Props) {
     // new Date("YYYY-MMDDTHH:MM:00") en el browser interpreta la hora como local → .toISOString() da UTC
     const fechaHoraUtc = new Date(`${data.fecha}T${data.hora}:00`).toISOString();
     const result = await upsertEventoAction(eventoInicial?.idEvento ?? null, data, imagenes, fechaHoraUtc);
-    if (result?.error) alert(result.error);
+    if (result?.error) {
+      setToast({ title: 'Algo salió mal', message: result.error, type: 'error' });
+      return;
+    }
+    setToast(result?.isNew
+      ? { title: '¡Evento creado!', message: 'Tu evento fue publicado con éxito.', type: 'success' }
+      : { title: 'Cambios guardados', message: 'Los cambios se guardaron correctamente.', type: 'success' }
+    );
   };
 
   return (
+    <>
+    {toast && (
+      <Toast
+        title={toast.title}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => {
+          setToast(null);
+          router.push('/organizador/eventos');
+        }}
+      />
+    )}
     <NuevoEventoForm
       register={register}
       setValue={setValue}
@@ -78,5 +100,6 @@ export default function FormularioEventoClient({ eventoInicial }: Props) {
       watchDireccion={watchDireccion}
       watchCiudad={watchCiudad}
     />
+    </>
   );
 }

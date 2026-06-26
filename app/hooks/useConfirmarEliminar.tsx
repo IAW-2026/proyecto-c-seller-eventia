@@ -1,8 +1,9 @@
-﻿"use client";
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import DialogoConfirmacion from '@/app/_componentes/dialogoConfirmacion';
+import Toast from '@/app/_componentes/toast';
 import { deleteEventoAction } from '@/app/lib/actions/eventos';
 
 type UseConfirmarEliminar = {
@@ -19,7 +20,7 @@ export default function useConfirmarEliminar(itemsOnPageCount?: number): UseConf
 
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ title: string; message: string; type: 'success' | 'error' } | null>(null);
 
   const openConfirm = (idEvento: number) => {
     setSelectedId(idEvento);
@@ -35,12 +36,10 @@ export default function useConfirmarEliminar(itemsOnPageCount?: number): UseConf
     if (!selectedId) return;
     setOpen(false);
     const result = await deleteEventoAction(selectedId);
-    if (result && 'error' in result) {
-      setToastMessage(result.error);
+    if (result && 'error' in result && typeof result.error === 'string') {
+      setToast({ title: 'No se pudo eliminar', message: result.error, type: 'error' });
       return;
     }
-
-    setToastMessage('Evento eliminado correctamente');
 
     // Si era el último elemento de la página y no es la primera, va a la página anterior
     const paginaActual = Number(searchParams.get('page') ?? '1');
@@ -51,13 +50,9 @@ export default function useConfirmarEliminar(itemsOnPageCount?: number): UseConf
     } else {
       router.refresh();
     }
-  };
 
-  useEffect(() => {
-    if (!toastMessage) return;
-    const t = setTimeout(() => setToastMessage(null), 3000);
-    return () => clearTimeout(t);
-  }, [toastMessage]);
+    setToast({ title: 'Evento eliminado', message: 'El evento fue eliminado correctamente.', type: 'success' });
+  };
 
   const ConfirmElement = (
     <>
@@ -70,10 +65,13 @@ export default function useConfirmarEliminar(itemsOnPageCount?: number): UseConf
         onConfirm={handleConfirm}
         onCancel={closeConfirm}
       />
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 rounded-md bg-[#111111] px-4 py-2 text-sm text-white shadow-lg">
-          {toastMessage}
-        </div>
+      {toast && (
+        <Toast
+          title={toast.title}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </>
   );
